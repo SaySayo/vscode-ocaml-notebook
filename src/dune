@@ -1,0 +1,4 @@
+(executable
+ (name extension)
+ (libraries js_of_ocaml vscode)
+ (modes js))
