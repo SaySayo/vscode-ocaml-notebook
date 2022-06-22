@@ -40,3 +40,15 @@ end
 module Window : sig
   val showInformationMessage : message:string -> unit [@@js.global "vscode.window.showInformationMessage"]
 end
+
+module TextDocument : sig
+  type t 
+
+  val t_to_js : t -> Ojs.t
+
+  val eol : t -> EndOfLine.t 
+end
+
+module NotebookCell : sig
+  val document -> TextDocument
+end 
