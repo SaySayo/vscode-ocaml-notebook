@@ -1,4 +1,4 @@
-module Disposable : sig
+(* module Disposable : sig
   type t
 
   val t_to_js : t -> Ojs.t
@@ -42,13 +42,121 @@ module Window : sig
 end
 
 module TextDocument : sig
-  type t 
+  include Js.T
 
-  val t_to_js : t -> Ojs.t
+  val uri : t -> Uri.t
 
-  val eol : t -> EndOfLine.t 
+  val fileName : t -> string
+
+  val isUntitled : t -> bool
+
+  val languageId : t -> string
+
+  val version : t -> int
+
+  val isDirty : t -> bool
+
+  val isClosed : t -> bool
+
+  val save : t -> bool Promise.t
+
+  val eol : t -> EndOfLine.t
+
+  val lineCount : t -> int
+
+  val lineAt : t -> line:int -> TextLine.t
+
+  val lineAtPosition : t -> position:Position.t -> TextLine.t
+
+  val offsetAt : t -> position:Position.t -> int
+
+  val positionAt : t -> offset:int -> Position.t
+
+  val getText : t -> ?range:Range.t -> unit -> string
+
+  val getWordRangeAtPosition :
+       t
+    -> position:Position.t
+    -> ?regex:Js_of_ocaml.Regexp.regexp
+    -> unit
+    -> Range.t option
+
+  val validateRange : t -> range:Range.t -> Range.t
+
+  val validatePosition : t -> position:Position.t -> Position.t
 end
 
-module NotebookCell : sig
-  val document -> TextDocument
+module NotebookCellExecutionSummary : sig
+
+  type t 
+
+  val executionOrder : t -> int option
+
+  val success : t -> bool option
+
+  val timing : t -> endTime:int -> startTime:int option
+
+end
+*)
+module NotebookCellKind : sig 
+  type t = Code | Markup 
 end 
+(*
+module NotebookRange : sig
+
+  type t 
+
+  val start : t -> int
+
+  val end : t -> int 
+
+  val isEmpty : t -> bool 
+
+  val with : (change:end:int) -> (*TODO*) 
+end *)
+
+module NotebookDocument : sig
+  type t
+
+  val cellCount : t -> int [@@js.get]
+
+   val isClosed : t -> bool [@@js.get]
+
+  val isDirty : t -> bool [@@js.get]
+
+  val isUntitled : t -> bool [@@js.get]
+
+  (* val metadata : t  *)
+
+  val notebookType : t -> string [@@js.get]
+
+  (* val uri : t -> Uri.t [@@js.get] *)
+
+  val version : t -> int [@@js.get]
+  (*
+  val cellAt : t -> index:int -> NotebookCell.t
+
+  val getCells : ?range:NotebookRange.t -> NotebookCell.t
+
+  val save : t -> Thenable -> bool *)
+
+end
+
+(*module NotebookCell : sig
+  type t
+
+  val document : t -> TextDocument.t
+
+  val executionSummary : t -> unit -> NotebookCellExecutionSummary.t
+
+  val index : t -> int
+
+  val kind : t -> NotebookCellKind.t
+
+  val metadata : t
+
+  val notebook : t -> NotebookDocument.t
+
+  val outputs : t -> NotebookCellOutput
+end 
+*)

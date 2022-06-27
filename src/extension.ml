@@ -1,4 +1,4 @@
-let activate (context : Vscode.ExtensionContext.t) =
+(* let activate (context : Vscode.ExtensionContext.t) =
   let disposable =
     Vscode.Commands.registerCommand ~command:"extension.helloWorld" ~callback:(fun ~args:_ ->
         Vscode.Window.showInformationMessage ~message:"Hello World!")
@@ -10,3 +10,4 @@ let activate (context : Vscode.ExtensionContext.t) =
 let () =
   let open Js_of_ocaml.Js in
   export "activate" (wrap_callback activate)
+*)
