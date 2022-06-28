@@ -1,3 +1,43 @@
+module NotebookCellKind : sig 
+  type t = Code | Markup 
+end 
+
+module NotebookDocument : sig
+  type t = Ojs.t
+
+  val cellCount : t -> int 
+
+   val isClosed : t -> bool 
+
+  val isDirty : t -> bool 
+
+  val isUntitled : t -> bool 
+
+  (* val metadata : t  *)
+
+  val notebookType : t -> string 
+
+  (* val uri : t -> Uri.t  *)
+
+  val version : t -> int 
+  (*
+  val cellAt : t -> index:int -> NotebookCell.t
+
+  val getCells : ?range:NotebookRange.t -> NotebookCell.t
+
+  val save : t -> Thenable -> bool *)
+end
+
+module NotebookCellData : sig 
+  type t = Ojs.t 
+  val make : kind:NotebookCellKind.t  -> value:string -> languageId:string -> t [@@js.new "vscode.NotebookCellData"]
+end
+
+module NotebookData : sig 
+  type t = Ojs.t 
+val make : cells:(NotebookCellData.t list [@js.variadic]) -> t [@@js.new "vscode.NotebookData"]
+end
+
 (* module Disposable : sig
   type t
 
@@ -13,7 +53,7 @@ module ExtensionContext : sig
 
   val t_of_js : Ojs.t -> t
 
-  val subscriptions : t -> Disposable.t list [@@js.get]
+  val subscriptions : t -> Disposable.t list 
 
   [@@@js.stop]
   val subscribe : t -> disposable:Disposable.t -> unit
@@ -98,9 +138,6 @@ module NotebookCellExecutionSummary : sig
 
 end
 *)
-module NotebookCellKind : sig 
-  type t = Code | Markup 
-end 
 (*
 module NotebookRange : sig
 
@@ -114,33 +151,6 @@ module NotebookRange : sig
 
   val with : (change:end:int) -> (*TODO*) 
 end *)
-
-module NotebookDocument : sig
-  type t
-
-  val cellCount : t -> int [@@js.get]
-
-   val isClosed : t -> bool [@@js.get]
-
-  val isDirty : t -> bool [@@js.get]
-
-  val isUntitled : t -> bool [@@js.get]
-
-  (* val metadata : t  *)
-
-  val notebookType : t -> string [@@js.get]
-
-  (* val uri : t -> Uri.t [@@js.get] *)
-
-  val version : t -> int [@@js.get]
-  (*
-  val cellAt : t -> index:int -> NotebookCell.t
-
-  val getCells : ?range:NotebookRange.t -> NotebookCell.t
-
-  val save : t -> Thenable -> bool *)
-
-end
 
 (*module NotebookCell : sig
   type t
