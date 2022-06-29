@@ -18,3 +18,10 @@ let _ =
   let cell = Vscode.NotebookCellData.make ~kind ~value ~languageId in
   let cells = [cell] in 
   Vscode.NotebookData.make ~cells
+
+(* let _ = 
+  let content = Vscode.Uint8Array in 
+  let token = Vscode.CancellationToken in
+  let serializeNotebook = Vscode.NotebookSerializer.serializeNotebook ~data ~token in
+  let deserializeNotebook = Vscode.NotebookSerializer.deserializeNotebook ~content ~token in
+  let notebookSerializer = Vscode.NotebookSerializer.create ~deserializeNotebook ~serializeNotebook  *)

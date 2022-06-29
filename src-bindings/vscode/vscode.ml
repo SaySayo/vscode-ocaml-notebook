@@ -1,3 +1,42 @@
+(* module Disposable = struct
+  (* type t = Ojs.t [@@js]
+  include [%js:
+val t_to_js : t -> Ojs.t
+
+val t_of_js : Ojs.t -> t] *)
+include
+[%js:
+val from : (t list[@js.variadic]) -> t
+  [@@js.global "vscode.Disposable.from"]
+
+val make : dispose:(unit -> unit) -> t [@@js.new "vscode.Disposable"]
+
+val dispose : t -> unit [@@js.call]]
+end *)
+
+(* module ExtensionContext = struct
+
+  include [%js: 
+  val t_to_js : t -> Ojs.t
+
+  val t_of_js : Ojs.t -> t
+
+  val subscriptions : t -> Disposable.t list [@@js.get]
+
+  [@@@js.stop]
+  val subscribe : t -> disposable:Disposable.t -> unit
+  [@@@js.start]
+
+  [@@@js.implem
+  let subscribe this ~disposable =
+    let subscriptions = Ojs.get_prop_ascii ([%js.of: t] this) "subscriptions" in
+    let (_ : Ojs.t) =
+      Ojs.call subscriptions "push" [| [%js.of: Disposable.t] disposable |]
+    in
+    ()
+  ]]
+end *)
+
 module NotebookCellKind = struct 
   type t = Code [@js 2] | Markup [@js 1] [@@js.enum] [@@js]
 end 
@@ -49,4 +88,27 @@ end
 module NotebookData = struct 
   type t = Ojs.t [@@js]
 include [%js: val make : cells:(NotebookCellData.t list [@js.variadic]) -> t [@@js.new "vscode.NotebookData"]]
+end
+
+module CancellationToken = struct 
+  type t = Ojs.t [@@js]
+end 
+
+module Buffer = struct 
+  type t = Ojs.t [@@js]
+end 
+
+module NotebookSerializer = struct 
+  type t = Ojs.t [@@js]
+
+  include [%js:
+    val deserializeNotebook :
+        t -> content:Buffer.t -> token:CancellationToken.t -> NotebookData.t 
+        [@@js.call]
+    val serializeNotebook :
+        t -> data:NotebookData.t -> token:CancellationToken.t -> Buffer.t 
+        [@@js.call]
+    val create : deserializeNotebook:(content:Buffer.t -> token:CancellationToken.t -> NotebookData.t)
+        -> serializeNotebook:(data:NotebookData.t -> token:CancellationToken.t -> Buffer.t)
+         -> t [@@js.builder]]
 end

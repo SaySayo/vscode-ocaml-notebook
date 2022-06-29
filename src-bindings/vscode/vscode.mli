@@ -1,3 +1,32 @@
+(* module Disposable : sig
+  type t
+
+  (* val t_to_js : t -> Ojs.t
+
+  val t_of_js : Ojs.t -> t *)
+end
+
+module ExtensionContext : sig
+  type t
+
+  val t_to_js : t -> Ojs.t
+
+  val t_of_js : Ojs.t -> t
+
+  val subscriptions : t -> Disposable.t list 
+
+  val subscribe : t -> disposable:Disposable.t -> unit
+
+  [@@@js.implem
+  let subscribe this ~disposable =
+    let subscriptions = Ojs.get_prop_ascii ([%js.of: t] this) "subscriptions" in
+    let (_ : Ojs.t) =
+      Ojs.call subscriptions "push" [| [%js.of: Disposable.t] disposable |]
+    in
+    ()
+  ]
+end *)
+
 module NotebookCellKind : sig 
   type t = Code | Markup 
 end 
@@ -38,36 +67,29 @@ module NotebookData : sig
 val make : cells:(NotebookCellData.t list [@js.variadic]) -> t [@@js.new "vscode.NotebookData"]
 end
 
-(* module Disposable : sig
-  type t
+module CancellationToken : sig 
+  type t 
+end 
 
-  val t_to_js : t -> Ojs.t
+module Buffer : sig 
+  type t 
+end 
 
-  val t_of_js : Ojs.t -> t
+module NotebookSerializer : sig 
+  type t 
+
+    val deserializeNotebook :
+        t -> content:Buffer.t -> token:CancellationToken.t -> NotebookData.t 
+  
+    val serializeNotebook :
+        t -> data:NotebookData.t -> token:CancellationToken.t -> Buffer.t 
+    
+    val create : deserializeNotebook:(content:Buffer.t -> token:CancellationToken.t -> NotebookData.t)
+        -> serializeNotebook:(data:NotebookData.t -> token:CancellationToken.t -> Buffer.t) -> t 
+  
 end
 
-module ExtensionContext : sig
-  type t
-
-  val t_to_js : t -> Ojs.t
-
-  val t_of_js : Ojs.t -> t
-
-  val subscriptions : t -> Disposable.t list 
-
-  [@@@js.stop]
-  val subscribe : t -> disposable:Disposable.t -> unit
-  [@@@js.start]
-
-  [@@@js.implem
-  let subscribe this ~disposable =
-    let subscriptions = Ojs.get_prop_ascii ([%js.of: t] this) "subscriptions" in
-    let (_ : Ojs.t) =
-      Ojs.call subscriptions "push" [| [%js.of: Disposable.t] disposable |]
-    in
-    ()
-  ]
-end
+ (*
 
 module Commands : sig
   val registerCommand :
