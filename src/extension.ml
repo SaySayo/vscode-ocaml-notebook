@@ -11,7 +11,7 @@ let () =
   let open Js_of_ocaml.Js in
   export "activate" (wrap_callback activate)
 *)
-let _ = 
+let notebookData = 
   let kind = Vscode.NotebookCellKind.Markup in
   let value = "Html markup" in 
   let languageId = "OCaml" in
@@ -26,4 +26,4 @@ let _ =
   let deserializeNotebook = Vscode.NotebookSerializer.deserializeNotebook ~content ~token in
   let notebookSerializer = Vscode.NotebookSerializer.create ~deserializeNotebook ~serializeNotebook  *)
 
-(* let deserializeNotebook ~content:_ ~token:_ =  *)
+  let deserializeNotebook ~content:_ ~token:_ = 
