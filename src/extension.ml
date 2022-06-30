@@ -1,4 +1,4 @@
-(* let activate (context : Vscode.ExtensionContext.t) =
+let activate (context : Vscode.ExtensionContext.t) =
   let disposable =
     Vscode.Commands.registerCommand ~command:"extension.helloWorld" ~callback:(fun ~args:_ ->
         Vscode.Window.showInformationMessage ~message:"Hello World!")
@@ -10,8 +10,8 @@
 let () =
   let open Js_of_ocaml.Js in
   export "activate" (wrap_callback activate)
-*)
-let notebookData = 
+
+let _ = 
   let kind = Vscode.NotebookCellKind.Markup in
   let value = "Html markup" in 
   let languageId = "OCaml" in
@@ -26,4 +26,4 @@ let notebookData =
   let deserializeNotebook = Vscode.NotebookSerializer.deserializeNotebook ~content ~token in
   let notebookSerializer = Vscode.NotebookSerializer.create ~deserializeNotebook ~serializeNotebook  *)
 
-  let deserializeNotebook ~content:_ ~token:_ = 
+  (* let deserializeNotebook ~content:_ ~token:_ =  *)
