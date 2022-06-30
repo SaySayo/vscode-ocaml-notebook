@@ -68,9 +68,9 @@ module CancellationToken : sig
   type t 
 end 
 
-module Buffer : sig 
+(* module Buffer : sig 
   type t 
-end 
+end  *)
 
 module NotebookSerializer : sig 
   type t 

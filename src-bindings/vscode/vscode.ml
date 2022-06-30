@@ -101,9 +101,9 @@ module CancellationToken = struct
   type t = Ojs.t [@@js]
 end 
 
-module Buffer = struct 
+(* module Buffer = struct 
   type t = Ojs.t [@@js]
-end 
+end  *)
 
 module NotebookSerializer = struct 
   type t = Ojs.t [@@js]
