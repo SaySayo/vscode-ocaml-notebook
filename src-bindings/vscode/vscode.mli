@@ -1,4 +1,4 @@
-(* module Disposable : sig
+module Disposable : sig
   type t
 
   (* val t_to_js : t -> Ojs.t
@@ -25,7 +25,7 @@ module ExtensionContext : sig
     in
     ()
   ]
-end *)
+end
 
 module NotebookCellKind : sig 
   type t = Code | Markup 

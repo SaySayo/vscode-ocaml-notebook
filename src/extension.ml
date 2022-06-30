@@ -25,3 +25,5 @@ let _ =
   let serializeNotebook = Vscode.NotebookSerializer.serializeNotebook ~data ~token in
   let deserializeNotebook = Vscode.NotebookSerializer.deserializeNotebook ~content ~token in
   let notebookSerializer = Vscode.NotebookSerializer.create ~deserializeNotebook ~serializeNotebook  *)
+
+(* let deserializeNotebook ~content:_ ~token:_ =  *)

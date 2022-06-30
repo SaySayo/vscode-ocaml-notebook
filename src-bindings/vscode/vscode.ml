@@ -1,4 +1,4 @@
-(* module Disposable = struct
+module Disposable = struct
   (* type t = Ojs.t [@@js]
   include [%js:
 val t_to_js : t -> Ojs.t
@@ -12,9 +12,9 @@ val from : (t list[@js.variadic]) -> t
 val make : dispose:(unit -> unit) -> t [@@js.new "vscode.Disposable"]
 
 val dispose : t -> unit [@@js.call]]
-end *)
+end
 
-(* module ExtensionContext = struct
+module ExtensionContext = struct
 
   include [%js: 
   val t_to_js : t -> Ojs.t
@@ -35,7 +35,7 @@ end *)
     in
     ()
   ]]
-end *)
+end
 
 module NotebookCellKind = struct 
   type t = Code [@js 2] | Markup [@js 1] [@@js.enum] [@@js]
