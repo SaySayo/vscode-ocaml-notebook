@@ -16,10 +16,15 @@
   ],
   "main": "./dist/extension.js",
   "contributes": {
-    "commands": [
+    "notebookProvider": [
       {
-        "command": "extension.helloWorld",
-        "title": "Hello World"
+        "viewType": "ocaml-notebook",
+        "displayName": "OCaml Notebook",
+        "selector": [
+          {
+            "filenamePattern": "*.mlnb"
+          }
+        ]
       }
     ]
   }

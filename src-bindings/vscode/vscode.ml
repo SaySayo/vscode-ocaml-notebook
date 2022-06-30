@@ -101,9 +101,12 @@ module CancellationToken = struct
   type t = Ojs.t [@@js]
 end 
 
-(* module Buffer = struct 
+module Buffer = struct 
   type t = Ojs.t [@@js]
-end  *)
+  include
+    [%js:
+    val alloc : size:int -> t [@@js.new "Buffer.alloc"]]
+end 
 
 module NotebookSerializer = struct 
   type t = Ojs.t [@@js]
@@ -118,4 +121,13 @@ module NotebookSerializer = struct
     val create : deserializeNotebook:(content:Buffer.t -> token:CancellationToken.t -> NotebookData.t)
         -> serializeNotebook:(data:NotebookData.t -> token:CancellationToken.t -> Buffer.t)
          -> t [@@js.builder]]
+end
+
+module NotebookDocumentContentOptions = struct
+  type t = Ojs.t [@@js]
+end
+
+module Workspace = struct
+include [%js: val registerNotebookSerializer : notebookType:string -> serializer:NotebookSerializer.t 
+  -> ?option:NotebookDocumentContentOptions.t -> unit -> Disposable.t [@@js.global "vscode.workspace.registerNotebookSerializer"] ]
 end

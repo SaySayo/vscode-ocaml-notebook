@@ -68,9 +68,10 @@ module CancellationToken : sig
   type t 
 end 
 
-(* module Buffer : sig 
+module Buffer : sig 
   type t 
-end  *)
+    val alloc : size:int -> t 
+end 
 
 module NotebookSerializer : sig 
   type t 
@@ -95,6 +96,16 @@ end
 
 module Window : sig
   val showInformationMessage : message:string -> unit
+end
+
+module NotebookDocumentContentOptions : sig
+  type t 
+end
+
+
+module Workspace : sig
+  val registerNotebookSerializer : notebookType:string -> serializer:NotebookSerializer.t 
+  -> ?option:NotebookDocumentContentOptions.t -> unit -> Disposable.t
 end
 (*
 module TextDocument : sig
