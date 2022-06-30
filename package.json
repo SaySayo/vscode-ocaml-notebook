@@ -4,7 +4,8 @@
   "description": "HelloWorld example for VS Code",
   "version": "0.0.1",
   "publisher": "vscode-samples",
-  "repository": "https://github.com/Microsoft/vscode-extension-samples/helloworld-sample",
+  "preview": true,
+  "enableProposedApi": true,
   "engines": {
     "vscode": "^1.64.0"
   },
@@ -12,7 +13,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:extension.helloWorld"
+    "*"
   ],
   "main": "./dist/extension.js",
   "contributes": {

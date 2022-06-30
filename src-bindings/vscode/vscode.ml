@@ -89,12 +89,16 @@ end *)
 
 module NotebookCellData = struct 
   type t = Ojs.t [@@js]
-  include [%js: val make : kind:NotebookCellKind.t  -> value:string -> languageId:string -> t [@@js.new "vscode.NotebookCellData"]]
+  include [%js: val make : kind:NotebookCellKind.t  -> value:string -> languageId:string -> t [@@js.new "vscode.NotebookCellData"]
+                val kind : t -> NotebookCellKind.t [@@js.get]
+                val languageId : t -> string [@@js.get]
+                val value : t -> string [@@js.get]]
 end
 
 module NotebookData = struct 
   type t = Ojs.t [@@js]
-include [%js: val make : cells:(NotebookCellData.t list [@js.variadic]) -> t [@@js.new "vscode.NotebookData"]]
+include [%js: val make : cells:(NotebookCellData.t list [@js.variadic]) -> t [@@js.new "vscode.NotebookData"]
+              val cells : t -> NotebookCellData.t list [@@js.global "NotebookCellData"]]
 end
 
 module CancellationToken = struct 

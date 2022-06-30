@@ -57,11 +57,15 @@ end
 module NotebookCellData : sig 
   type t = Ojs.t 
   val make : kind:NotebookCellKind.t  -> value:string -> languageId:string -> t [@@js.new "vscode.NotebookCellData"]
+  val kind : t -> NotebookCellKind.t 
+  val languageId : t -> string 
+  val value : t -> string
 end
 
 module NotebookData : sig 
   type t = Ojs.t 
 val make : cells:(NotebookCellData.t list [@js.variadic]) -> t [@@js.new "vscode.NotebookData"]
+val cells : t -> NotebookCellData.t list 
 end
 
 module CancellationToken : sig 
