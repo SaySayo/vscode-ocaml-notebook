@@ -1,9 +1,6 @@
-(* module Disposable = struct
-  (* type t = Ojs.t [@@js]
-  include [%js:
-val t_to_js : t -> Ojs.t
+module Disposable = struct
+   type t = Ojs.t [@@js]
 
-val t_of_js : Ojs.t -> t] *)
 include
 [%js:
 val from : (t list[@js.variadic]) -> t
@@ -12,16 +9,14 @@ val from : (t list[@js.variadic]) -> t
 val make : dispose:(unit -> unit) -> t [@@js.new "vscode.Disposable"]
 
 val dispose : t -> unit [@@js.call]]
-end *)
+end
 
-(* module ExtensionContext = struct
-
+module ExtensionContext = struct
+  type t = Ojs.t [@@js]
   include [%js: 
-  val t_to_js : t -> Ojs.t
-
-  val t_of_js : Ojs.t -> t
-
   val subscriptions : t -> Disposable.t list [@@js.get]
+
+  val extensionPath : t -> string [@@js.get]
 
   [@@@js.stop]
   val subscribe : t -> disposable:Disposable.t -> unit
@@ -35,7 +30,19 @@ end *)
     in
     ()
   ]]
-end *)
+end
+
+module Commands = struct
+  include [%js: val registerCommand :
+    command:string
+    -> callback:(args:(Ojs.t list[@js.variadic]) -> unit)
+    -> Disposable.t
+    [@@js.global "vscode.commands.registerCommand"]]
+end
+
+module Window = struct
+  include [%js: val showInformationMessage : message:string -> unit [@@js.global "vscode.window.showInformationMessage"]]
+end
 
 module NotebookCellKind = struct 
   type t = Code [@js 2] | Markup [@js 1] [@@js.enum] [@@js]

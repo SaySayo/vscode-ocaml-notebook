@@ -1,9 +1,6 @@
-(* module Disposable : sig
+module Disposable : sig
   type t
 
-  (* val t_to_js : t -> Ojs.t
-
-  val t_of_js : Ojs.t -> t *)
 end
 
 module ExtensionContext : sig
@@ -25,7 +22,7 @@ module ExtensionContext : sig
     in
     ()
   ]
-end *)
+end
 
 module NotebookCellKind : sig 
   type t = Code | Markup 
@@ -89,20 +86,17 @@ module NotebookSerializer : sig
   
 end
 
- (*
-
 module Commands : sig
   val registerCommand :
     command:string
-    -> callback:(args:(Ojs.t list[@js.variadic]) -> unit)
+    -> callback:(args:(Ojs.t list) -> unit)
     -> Disposable.t
-    [@@js.global "vscode.commands.registerCommand"]
 end
 
 module Window : sig
-  val showInformationMessage : message:string -> unit [@@js.global "vscode.window.showInformationMessage"]
+  val showInformationMessage : message:string -> unit
 end
-
+(*
 module TextDocument : sig
   include Js.T
 
