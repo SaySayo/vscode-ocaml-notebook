@@ -1,6 +1,8 @@
 (library
  (name vscode)
  (libraries ojs)
+ (js_of_ocaml
+  (javascript_files vscode_stub.js))
  (preprocess
   (pps gen_js_api.ppx))
  (modes byte))

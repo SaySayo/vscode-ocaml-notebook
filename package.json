@@ -17,9 +17,9 @@
   ],
   "main": "./dist/extension.js",
   "contributes": {
-    "notebookProvider": [
+    "notebooks": [
       {
-        "viewType": "ocaml-notebook",
+        "type": "ocamlnotebook",
         "displayName": "OCaml Notebook",
         "selector": [
           {

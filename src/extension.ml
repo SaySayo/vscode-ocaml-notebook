@@ -13,7 +13,7 @@
   let activate (context : Vscode.ExtensionContext.t) =
     let _print1 = print_endline "1234567" in
   let disposable =
-    Vscode.Workspace.registerNotebookSerializer ~notebookType:"OCaml-Notebook" ~serializer:notebookSerializer ()
+    Vscode.Workspace.registerNotebookSerializer ~notebookType:"ocamlnotebook" ~serializer:notebookSerializer ()
   in
   Vscode.ExtensionContext.subscribe ~disposable context
 

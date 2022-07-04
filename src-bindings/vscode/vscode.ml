@@ -97,7 +97,7 @@ end
 
 module NotebookData = struct 
   type t = Ojs.t [@@js]
-include [%js: val make : cells:(NotebookCellData.t list [@js.variadic]) -> t [@@js.new "vscode.NotebookData"]
+include [%js: val make : cells:(NotebookCellData.t list) -> t [@@js.new "vscode.NotebookData"]
               val cells : t -> NotebookCellData.t list [@@js.global "NotebookCellData"]]
 end
 
