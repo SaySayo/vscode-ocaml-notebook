@@ -106,6 +106,9 @@ module NotebookDocumentContentOptions : sig
   type t 
 end
 
+module NotebookController : sig
+  type t 
+end
 
 module Workspace : sig
   val registerNotebookSerializer : notebookType:string -> serializer:NotebookSerializer.t 

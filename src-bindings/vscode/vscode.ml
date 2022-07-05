@@ -127,6 +127,15 @@ module NotebookSerializer = struct
          -> t [@@js.builder]]
 end
 
+module NotebookController = struct
+  type t = Ojs.t [@@js]
+end
+
+(* module Notebooks = struct 
+include [%js: val createNotebookController : id:string -> notebookType:string -> label:string -> ?handler:(cell:NotebookCellData.t list
+ -> notebook:NotebookDocument.t -> controller:NotebookController.t) -> ]
+end *)
+
 module NotebookDocumentContentOptions = struct
   type t = Ojs.t [@@js]
 end
