@@ -110,10 +110,6 @@ module NotebookController : sig
   type t 
 end
 
-module Promise : sig
-  type t
-end
-
 module Notebooks : sig 
   val createNotebookController : id:string -> notebookType:string -> label:string -> ?handler:(cell:NotebookCellData.t list
    -> notebook:NotebookDocument.t -> controller:NotebookController.t -> unit Promise.t) -> unit -> NotebookController.t

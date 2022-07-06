@@ -131,10 +131,6 @@ module NotebookController = struct
   type t = Ojs.t [@@js]
 end
 
-module Promise = struct
-  type t = Ojs.t [@@js]
-end
-
 module Notebooks = struct 
 include [%js: val createNotebookController : id:string 
 -> notebookType:string 
