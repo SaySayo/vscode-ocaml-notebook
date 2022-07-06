@@ -134,8 +134,14 @@ module TextDocument = struct
   type t = Ojs.t [@@js]
 end
 
+module NotebookCellOutputItem = struct
+  type t = Ojs.t [@@js]
+end
+
 module NotebookCellOutput = struct
   type t = Ojs.t [@@js]
+include [%js:
+val make : items:(NotebookCellOutputItem.t list) -> ?metadata:unit -> unit -> t [@@js.new "vscode.NotebookCellOutput"]]
 end
 
 module NotebookCell = struct

@@ -164,8 +164,13 @@ module TextDocument : sig
   val validatePosition : t -> position:Position.t -> Position.t *)
 end
 
+module NotebookCellOutputItem : sig
+  type t 
+end
+
 module NotebookCellOutput : sig
   type t 
+val make : items:(NotebookCellOutputItem.t list) -> ?metadata:unit -> unit -> t
 end
 
 module NotebookCell : sig
