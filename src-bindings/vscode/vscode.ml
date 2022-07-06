@@ -137,7 +137,9 @@ end
 module NotebookCellOutputItem = struct
   type t = Ojs.t [@@js]
 include [%js:
-  val make : data:Buffer.t -> mime:string -> t [@@js.new "vscode.NotebookCellOutputItem"]]
+  val make : data:Buffer.t -> mime:string -> t [@@js.new "vscode.NotebookCellOutputItem"]
+  val data : t -> Buffer.t [@@js.get]
+  val mime : t -> string [@@js.get]]
 end
 
 module NotebookCellOutput = struct
