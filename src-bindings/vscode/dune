@@ -1,6 +1,6 @@
 (library
  (name vscode)
- (libraries ojs)
+ (libraries ojs promise_jsoo)
  (js_of_ocaml
   (javascript_files vscode_stub.js))
  (preprocess

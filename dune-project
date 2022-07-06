@@ -11,6 +11,8 @@
  (depends
   (ocaml
    (>= 4.11))
+   (promise_jsoo
+   (>= 0.3.1))
   (gen_js_api
    (and
     (= 1.1.1)

@@ -4,6 +4,7 @@ synopsis: "HelloWorld example for VS Code"
 depends: [
   "dune" {>= "3.0"}
   "ocaml" {>= "4.11"}
+  "promise_jsoo" {>= "0.3.1"}
   "gen_js_api" {= "1.1.1" & build}
   "ojs"
   "js_of_ocaml"
