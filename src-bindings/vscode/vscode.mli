@@ -166,6 +166,7 @@ end
 
 module NotebookCellOutputItem : sig
   type t 
+  val make : data:Buffer.t -> mime:string -> t 
 end
 
 module NotebookCellOutput : sig
