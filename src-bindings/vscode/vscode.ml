@@ -75,17 +75,16 @@ include
   val save : t -> Thenable -> bool *)]
 end
 
-(* module NotebookCellExecutionSummary : sig
+module NotebookCellExecutionSummary = struct
+  type t = Ojs.t [@@js]
+include [%js:
+  val executionOrder : t -> int option [@@js.get]
 
-  type t 
+  val success : t -> bool option [@@js.get]
 
-  val executionOrder : t -> int option
+  (* val timing : t -> endTime:int -> startTime:int option [@@js.get] *)]
 
-  val success : t -> bool option
-
-  val timing : t -> endTime:int -> startTime:int option
-
-end *)
+end
 
 module NotebookCellData = struct 
   type t = Ojs.t [@@js]
@@ -127,8 +126,46 @@ module NotebookSerializer = struct
          -> t [@@js.builder]]
 end
 
+module NotebookDocumentContentOptions = struct
+  type t = Ojs.t [@@js]
+end
+
+module TextDocument = struct
+  type t = Ojs.t [@@js]
+end
+
+module NotebookCellOutput = struct
+  type t = Ojs.t [@@js]
+end
+
+module NotebookCell = struct
+  type t = Ojs.t [@@js]
+(* include [%js:
+  val document : t -> TextDocument.t [@@js.get]
+
+  val executionSummary : t -> unit -> NotebookCellExecutionSummary.t [@@js.get]
+
+  val index : t -> int [@@js.get]
+
+  val kind : t -> NotebookCellKind.t [@@js.get]
+
+  val metadata : t [@@js.get]
+
+  val notebook : t -> NotebookDocument.t [@@js.get]
+
+  val outputs : t -> NotebookCellOutput [@@js.get]] *)
+end 
+
+module NotebookCellExecution = struct 
+  type t = Ojs.t [@@js]
+include [%js:
+val replaceOutput : t -> out:NotebookCellOutput.t -> ?cell:NotebookCell.t -> unit -> unit Promise.t [@@js.call]]
+end
+
 module NotebookController = struct
   type t = Ojs.t [@@js]
+include [%js:
+val createNotebookCellExecution : t -> cell:NotebookCell.t -> NotebookCellExecution.t [@@js.call]]
 end
 
 module Notebooks = struct 
@@ -139,10 +176,6 @@ include [%js: val createNotebookController : id:string
 -> notebook:NotebookDocument.t -> controller:NotebookController.t -> unit Promise.t)
 -> unit 
 -> NotebookController.t [@@js.global "vscode.notebook.createNotebookController"]]
-end
-
-module NotebookDocumentContentOptions = struct
-  type t = Ojs.t [@@js]
 end
 
 module Workspace = struct

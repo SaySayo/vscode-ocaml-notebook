@@ -54,6 +54,19 @@ module NotebookDocument : sig
   val save : t -> Thenable -> bool *)
 end
 
+module NotebookCellExecutionSummary : sig
+
+  type t 
+
+  val executionOrder : t -> int option
+
+  val success : t -> bool option
+
+  (* val timing : t -> endTime:int -> startTime:int option *)
+
+end
+
+
 module NotebookCellData : sig 
   type t = Ojs.t 
   val make : kind:NotebookCellKind.t  -> value:string -> languageId:string -> t [@@js.new "vscode.NotebookCellData"]
@@ -106,23 +119,9 @@ module NotebookDocumentContentOptions : sig
   type t 
 end
 
-module NotebookController : sig
-  type t 
-end
-
-module Notebooks : sig 
-  val createNotebookController : id:string -> notebookType:string -> label:string -> ?handler:(cell:NotebookCellData.t list
-   -> notebook:NotebookDocument.t -> controller:NotebookController.t -> unit Promise.t) -> unit -> NotebookController.t
-  end
-
-module Workspace : sig
-  val registerNotebookSerializer : notebookType:string -> serializer:NotebookSerializer.t 
-  -> ?option:NotebookDocumentContentOptions.t -> unit -> Disposable.t
-end
-(*
 module TextDocument : sig
-  include Js.T
-
+  type t
+(* 
   val uri : t -> Uri.t
 
   val fileName : t -> string
@@ -162,21 +161,58 @@ module TextDocument : sig
 
   val validateRange : t -> range:Range.t -> Range.t
 
-  val validatePosition : t -> position:Position.t -> Position.t
+  val validatePosition : t -> position:Position.t -> Position.t *)
 end
 
-module NotebookCellExecutionSummary : sig
-
+module NotebookCellOutput : sig
   type t 
+end
 
-  val executionOrder : t -> int option
+module NotebookCell : sig
+  type t
 
-  val success : t -> bool option
+  (* val document : t -> TextDocument.t
 
-  val timing : t -> endTime:int -> startTime:int option
+  val executionSummary : t -> unit -> NotebookCellExecutionSummary.t
+
+  val index : t -> int
+
+  val kind : t -> NotebookCellKind.t
+
+  val metadata : t
+
+  val notebook : t -> NotebookDocument.t
+
+  val outputs : t -> NotebookCellOutput *)
+end 
+
+module NotebookCellExecution : sig
+  type t = Ojs.t [@@js]
+val replaceOutput : t -> out:NotebookCellOutput.t -> ?cell:NotebookCell.t -> unit -> unit Promise.t
+end
+
+module NotebookController : sig
+  type t 
+val createNotebookCellExecution : t -> cell:NotebookCell.t -> NotebookCellExecution.t
 
 end
-*)
+
+module Notebooks : sig 
+  val createNotebookController : id:string 
+  -> notebookType:string 
+  -> label:string -> ?handler:(cell:NotebookCellData.t list
+  -> notebook:NotebookDocument.t 
+  -> controller:NotebookController.t 
+  -> unit Promise.t) 
+  -> unit 
+  -> NotebookController.t
+  end
+
+module Workspace : sig
+  val registerNotebookSerializer : notebookType:string -> serializer:NotebookSerializer.t 
+  -> ?option:NotebookDocumentContentOptions.t -> unit -> Disposable.t
+end
+
 (*
 module NotebookRange : sig
 
@@ -191,21 +227,3 @@ module NotebookRange : sig
   val with : (change:end:int) -> (*TODO*) 
 end *)
 
-(*module NotebookCell : sig
-  type t
-
-  val document : t -> TextDocument.t
-
-  val executionSummary : t -> unit -> NotebookCellExecutionSummary.t
-
-  val index : t -> int
-
-  val kind : t -> NotebookCellKind.t
-
-  val metadata : t
-
-  val notebook : t -> NotebookDocument.t
-
-  val outputs : t -> NotebookCellOutput
-end 
-*)
