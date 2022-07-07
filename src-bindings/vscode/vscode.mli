@@ -166,9 +166,14 @@ end
 
 module NotebookCellOutputItem : sig
   type t 
+  
   val make : data:Buffer.t -> mime:string -> t 
+
   val data : t -> Buffer.t
+
   val mime : t -> string
+
+  val error : value:Promise.error -> t
 end
 
 module NotebookCellOutput : sig

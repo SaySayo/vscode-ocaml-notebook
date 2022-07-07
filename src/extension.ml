@@ -1,6 +1,6 @@
   let deserializeNotebook ~content:_ ~token:_ = 
     let kind = Vscode.NotebookCellKind.Markup in
-    let value = "Html markup" in 
+    let value = "This is a proof concept of a notebook cell :)" in 
     let languageId = "OCaml" in
     let cell = Vscode.NotebookCellData.make ~kind ~value ~languageId in
     let cells = [cell] in 
@@ -11,7 +11,6 @@
   let notebookSerializer = Vscode.NotebookSerializer.create ~serializeNotebook ~deserializeNotebook 
   
   let activate (context : Vscode.ExtensionContext.t) =
-    let _print1 = print_endline "1234567" in
   let disposable =
     Vscode.Workspace.registerNotebookSerializer ~notebookType:"ocamlnotebook" ~serializer:notebookSerializer ()
   in
@@ -21,7 +20,6 @@
    activate() *)
 let () =
   let open Js_of_ocaml.Js in
-  let _print = print_endline "1234" in
   export "activate" (wrap_callback activate)
 
 (* let notebookData = 

@@ -138,12 +138,19 @@ module NotebookCellOutputItem = struct
   type t = Ojs.t [@@js]
 include [%js:
   val make : data:Buffer.t -> mime:string -> t [@@js.new "vscode.NotebookCellOutputItem"]
+
   val data : t -> Buffer.t [@@js.get]
-  val mime : t -> string [@@js.get]]
+  
+  val mime : t -> string [@@js.get]
+
+  val error : value:Promise.error -> t
+  [@@js.global "vscode.NotebookCellOutputItem.error"]]
 end
 
 module NotebookCellOutput = struct
+
   type t = Ojs.t [@@js]
+
 include [%js:
 val make : items:(NotebookCellOutputItem.t list) -> ?metadata:unit -> unit -> t [@@js.new "vscode.NotebookCellOutput"]]
 end
