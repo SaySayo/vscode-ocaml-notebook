@@ -174,6 +174,9 @@ module NotebookCellOutputItem : sig
   val mime : t -> string
 
   val error : value:Promise.error -> t
+
+  val text : value:string -> ?mime:string -> unit -> t
+
 end
 
 module NotebookCellOutput : sig

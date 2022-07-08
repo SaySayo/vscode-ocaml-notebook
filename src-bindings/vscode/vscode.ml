@@ -144,7 +144,10 @@ include [%js:
   val mime : t -> string [@@js.get]
 
   val error : value:Promise.error -> t
-  [@@js.global "vscode.NotebookCellOutputItem.error"]]
+  [@@js.global "vscode.NotebookCellOutputItem.error"]
+  
+  val text : value:string -> ?mime:string -> unit -> t
+  [@@js.global "vscode.NotebookCellOutputItem.text"]]
 end
 
 module NotebookCellOutput = struct
