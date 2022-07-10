@@ -22,18 +22,16 @@ let () =
   let open Js_of_ocaml.Js in
   export "activate" (wrap_callback activate)
 
-(* let notebookData = 
+(* let notebookController = 
+  let createNotebookCellExecution ~cell:cell =  *)
+
+let _notebookCell = 
+  (* let kind = Vscode.NotebookCellKind.Markup in
+  let document = Vscode.TextDocument in
+  let outputs = Vscode.NotebookCellOutput.make ~items ()  *)
   let kind = Vscode.NotebookCellKind.Markup in
-  let value = "Html markup" in 
-  let languageId = "OCaml" in
-  let cell = Vscode.NotebookCellData.make ~kind ~value ~languageId in
-  let cells = [cell] in 
-  Vscode.NotebookData.make ~cells *)
-
-(* let _ = 
-  let content = Vscode.Uint8Array in 
-  let token = Vscode.CancellationToken in
-  let serializeNotebook = Vscode.NotebookSerializer.serializeNotebook ~data ~token in
-  let deserializeNotebook = Vscode.NotebookSerializer.deserializeNotebook ~content ~token in
-  let notebookSerializer = Vscode.NotebookSerializer.create ~deserializeNotebook ~serializeNotebook  *)
-
+    let value = "This is a proof concept of a notebook cell :)" in 
+    let languageId = "OCaml" in
+    let cell = Vscode.NotebookCellData.make ~kind ~value ~languageId in
+    let cells = [cell] in 
+    Vscode.NotebookData.make ~cells

@@ -187,19 +187,19 @@ end
 module NotebookCell : sig
   type t
 
-  (* val document : t -> TextDocument.t
+  val kind : t -> NotebookCellKind.t 
 
+  val metadata : t 
+
+  val notebook : t -> NotebookDocument.t 
+
+   val document : t -> TextDocument.t
+  (*
   val executionSummary : t -> unit -> NotebookCellExecutionSummary.t
 
-  val index : t -> int
+  val index : t -> int *)
 
-  val kind : t -> NotebookCellKind.t
-
-  val metadata : t
-
-  val notebook : t -> NotebookDocument.t
-
-  val outputs : t -> NotebookCellOutput *)
+  val outputs : t -> NotebookCellOutput.t list 
 end 
 
 module NotebookCellExecution : sig
@@ -209,8 +209,9 @@ end
 
 module NotebookController : sig
   type t 
-val createNotebookCellExecution : t -> cell:NotebookCell.t -> NotebookCellExecution.t
+    val createNotebookCellExecution : t -> cell:NotebookCell.t -> NotebookCellExecution.t
 
+    val notebookType : t -> string 
 end
 
 module Notebooks : sig 

@@ -154,26 +154,26 @@ module NotebookCellOutput = struct
 
   type t = Ojs.t [@@js]
 
-include [%js:
-val make : items:(NotebookCellOutputItem.t list) -> ?metadata:unit -> unit -> t [@@js.new "vscode.NotebookCellOutput"]]
+  include [%js:
+  val make : items:(NotebookCellOutputItem.t list) -> ?metadata:unit -> unit -> t [@@js.new "vscode.NotebookCellOutput"]]
 end
 
 module NotebookCell = struct
   type t = Ojs.t [@@js]
-(* include [%js:
-  val document : t -> TextDocument.t [@@js.get]
-
+ include [%js:
+   val document : t -> TextDocument.t [@@js.get]
+(*
   val executionSummary : t -> unit -> NotebookCellExecutionSummary.t [@@js.get]
 
-  val index : t -> int [@@js.get]
+  val index : t -> int [@@js.get] *)
 
   val kind : t -> NotebookCellKind.t [@@js.get]
 
-  val metadata : t [@@js.get]
+  val metadata : t [@@js.global "vscode.NotebookCell.metadata"]
 
   val notebook : t -> NotebookDocument.t [@@js.get]
 
-  val outputs : t -> NotebookCellOutput [@@js.get]] *)
+   val outputs : t -> NotebookCellOutput.t list [@@js.get] ] 
 end 
 
 module NotebookCellExecution = struct 
@@ -185,7 +185,9 @@ end
 module NotebookController = struct
   type t = Ojs.t [@@js]
 include [%js:
-val createNotebookCellExecution : t -> cell:NotebookCell.t -> NotebookCellExecution.t [@@js.call]]
+      val createNotebookCellExecution : t -> cell:NotebookCell.t -> NotebookCellExecution.t [@@js.call]
+
+      val notebookType : t -> string [@@js.get]]
 end
 
 module Notebooks = struct 
