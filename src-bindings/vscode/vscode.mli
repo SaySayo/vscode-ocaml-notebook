@@ -212,6 +212,9 @@ module NotebookController : sig
     val createNotebookCellExecution : t -> cell:NotebookCell.t -> NotebookCellExecution.t
 
     val notebookType : t -> string 
+
+    val executeHandler : t -> cells:(NotebookCell.t list) -> notebook:NotebookDocument.t -> controller:t -> unit Promise.t
+
 end
 
 module Notebooks : sig 

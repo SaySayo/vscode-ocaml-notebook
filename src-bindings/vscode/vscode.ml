@@ -187,7 +187,9 @@ module NotebookController = struct
 include [%js:
       val createNotebookCellExecution : t -> cell:NotebookCell.t -> NotebookCellExecution.t [@@js.call]
 
-      val notebookType : t -> string [@@js.get]]
+      val notebookType : t -> string [@@js.get]
+      
+      val executeHandler : t -> cells:(NotebookCell.t list) -> notebook:NotebookDocument.t -> controller:t -> unit Promise.t [@@js.call]]
 end
 
 module Notebooks = struct 
