@@ -214,12 +214,12 @@ module NotebookCellExecution = struct
       unit Promise.t
       [@@js.call]
 
-      val executionOrder : t -> int [@@js.get "executionOrder"]
-      val set_executionOrder : t -> int -> unit [@@js.set "executionOrder"]
-    
-      val start : t -> ?startTime:float -> unit -> unit [@@js.call "start"]
-        
-      val end_ : t -> success:bool -> ?endTime:float -> unit -> unit [@@js.call "end"]]
+    val executionOrder : t -> int [@@js.get "executionOrder"]
+    val set_executionOrder : t -> int -> unit [@@js.set "executionOrder"]
+    val start : t -> ?startTime:float -> unit -> unit [@@js.call "start"]
+
+    val end_ : t -> success:bool -> ?endTime:float -> unit -> unit
+      [@@js.call "end"]]
 end
 
 module NotebookController = struct

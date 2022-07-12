@@ -201,13 +201,10 @@ module NotebookCellExecution : sig
     unit ->
     unit Promise.t
 
-    val executionOrder : t -> int 
-
-    val set_executionOrder : t -> int -> unit 
-  
-    val start : t -> ?startTime:float -> unit -> unit 
-      
-    val end_ : t -> success:bool -> ?endTime:float -> unit -> unit
+  val executionOrder : t -> int
+  val set_executionOrder : t -> int -> unit
+  val start : t -> ?startTime:float -> unit -> unit
+  val end_ : t -> success:bool -> ?endTime:float -> unit -> unit
 end
 
 module NotebookController : sig
@@ -228,16 +225,16 @@ end
 
 module Notebooks : sig
   val createNotebookController :
-    id:string ->
-    notebookType:string ->
-    label:string ->
-    ?handler:
-      (cell:NotebookCellData.t list ->
-      notebook:NotebookDocument.t ->
-      controller:NotebookController.t ->
-      unit Promise.t) ->
-    unit ->
-    NotebookController.t
+  id:string ->
+  notebookType:string ->
+  label:string ->
+  ?handler:
+    (cells:NotebookCellData.t list ->
+    notebook:NotebookDocument.t ->
+    controller:NotebookController.t ->
+    unit Promise.t) ->
+  unit ->
+  NotebookController.t
 end
 
 module Workspace : sig
