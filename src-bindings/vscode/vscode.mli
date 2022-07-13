@@ -225,16 +225,16 @@ end
 
 module Notebooks : sig
   val createNotebookController :
-  id:string ->
-  notebookType:string ->
-  label:string ->
-  ?handler:
-    (cells:NotebookCell.t list ->
-    notebook:NotebookDocument.t ->
-    controller:NotebookController.t ->
-    unit Promise.t) ->
-  unit ->
-  NotebookController.t
+    id:string ->
+    notebookType:string ->
+    label:string ->
+    ?handler:
+      (cells:NotebookCell.t list ->
+      notebook:NotebookDocument.t ->
+      controller:NotebookController.t ->
+      unit Promise.t) ->
+    unit ->
+    NotebookController.t
 end
 
 module Workspace : sig
