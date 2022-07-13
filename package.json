@@ -5,7 +5,6 @@
   "version": "0.0.1",
   "publisher": "vscode-samples",
   "preview": true,
-  "enableProposedApi": true,
   "engines": {
     "vscode": "^1.64.0"
   },

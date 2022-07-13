@@ -250,7 +250,7 @@ module Notebooks = struct
       notebookType:string ->
       label:string ->
       ?handler:
-        (cells:NotebookCellData.t list ->
+        (cells:NotebookCell.t list ->
         notebook:NotebookDocument.t ->
         controller:NotebookController.t ->
         unit Promise.t) ->

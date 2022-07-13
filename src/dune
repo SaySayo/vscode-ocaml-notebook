@@ -1,4 +1,8 @@
 (executable
  (name extension)
  (libraries js_of_ocaml vscode)
- (modes js))
+ (modes js)
+ (preprocess
+  (pps js_of_ocaml-ppx))
+ (js_of_ocaml
+  (flags --source-map --pretty)))
