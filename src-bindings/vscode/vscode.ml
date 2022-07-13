@@ -196,7 +196,7 @@ module NotebookCell = struct
   val index : t -> int [@@js.get] *)
 
     val kind : t -> NotebookCellKind.t [@@js.get]
-    val metadata : t [@@js.global "vscode.NotebookCell.metadata"]
+    (* val metadata : t [@@js.get "vscode.NotebookCell.metadata"] *)
     val notebook : t -> NotebookDocument.t [@@js.get]
     val outputs : t -> NotebookCellOutput.t list [@@js.get]]
 end
@@ -256,7 +256,7 @@ module Notebooks = struct
         unit Promise.t) ->
       unit ->
       NotebookController.t
-      [@@js.global "vscode.notebook.createNotebookController"]]
+      [@@js.global "vscode.notebooks.createNotebookController"]]
 end
 
 module Workspace = struct

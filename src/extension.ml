@@ -4,7 +4,7 @@ open Vscode
 let deserializeNotebook ~content:_ ~token:_ =
   let kind = NotebookCellKind.Markup in
   let value = "This is a proof concept of a notebook cell :)" in
-  let languageId = "OCaml" in
+  let languageId = "ocaml" in
   let cell = NotebookCellData.make ~kind ~value ~languageId in
   let cells = [ cell ] in
   NotebookData.make ~cells
@@ -16,7 +16,7 @@ let notebookSerializer =
 
 let _notebook_controller =
   let id = "ocamlnotebook" in
-  let notebookType = "markup" in
+  let notebookType = "ocamlnotebook" in
   let label = "ocamlnotebook" in
   let handler ~(cells : NotebookCell.t list) ~notebook:_ ~controller =
     (* Create the handler *)
@@ -36,7 +36,7 @@ let _notebook_controller =
              let notebook_cell_output_item =
                (* We don't have a buffer in the VSCode API, this is a UInt8Array, which is part of the escript API, should be binded. *)
                let data = Buffer.alloc ~size:16 in
-               let mime = "ocaml-notebook-cell-output-item" in
+               let mime = "text/plain" in
                NotebookCellOutputItem.make ~data ~mime
              in
              (* Create CellOutput *)

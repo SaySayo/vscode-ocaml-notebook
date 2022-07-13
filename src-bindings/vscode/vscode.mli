@@ -180,7 +180,7 @@ module NotebookCell : sig
   type t
 
   val kind : t -> NotebookCellKind.t
-  val metadata : t
+  (* val metadata : t *)
   val notebook : t -> NotebookDocument.t
   val document : t -> TextDocument.t
   (*
