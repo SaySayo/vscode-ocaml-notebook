@@ -35,7 +35,7 @@ let _notebook_controller =
              (* Create CellOutputItem with the content of the cell *)
              let notebook_cell_output_item =
                (* We don't have a buffer in the VSCode API, this is a UInt8Array, which is part of the escript API, should be binded. *)
-               let data = Buffer.alloc ~size:16 in
+               let data = Buffer.from "ocamlnotebook" in
                let mime = "text/plain" in
                NotebookCellOutputItem.make ~data ~mime
              in

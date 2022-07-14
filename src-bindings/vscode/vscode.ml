@@ -123,7 +123,8 @@ end
 module Buffer = struct
   type t = Ojs.t [@@js]
 
-  include [%js: val alloc : size:int -> t [@@js.new "Buffer.alloc"]]
+  include [%js: val alloc : size:int -> t [@@js.new "Buffer.alloc"]
+  val from : string -> t [@@js.global "Buffer.from"]]
 end
 
 module NotebookSerializer = struct
