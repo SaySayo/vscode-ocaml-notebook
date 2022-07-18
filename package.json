@@ -1,7 +1,7 @@
 {
-  "name": "helloworld-sample",
-  "displayName": "helloworld-sample",
-  "description": "HelloWorld example for VS Code",
+  "name": "vscode-ocaml-notebooks",
+  "displayName": "Ocaml Notebook",
+  "description": "Ocaml notebooks example for VS Code",
   "version": "0.0.1",
   "publisher": "vscode-samples",
   "preview": true,

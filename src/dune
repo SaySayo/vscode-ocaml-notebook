@@ -1,8 +1,23 @@
 (executable
  (name extension)
- (libraries js_of_ocaml vscode)
+ (libraries js_of_ocaml vscode compiler-libs.toplevel)
  (modes js)
  (preprocess
   (pps js_of_ocaml-ppx))
- (js_of_ocaml
-  (flags --source-map --pretty)))
+  (js_of_ocaml
+  (flags --source-map --pretty --toplevel  +toplevel.js +dynlink.js))
+  )
+
+; (rule
+;  (targets extension.bc.js)
+;  (action
+;   (run
+;    %{bin:js_of_ocaml}
+;    --toplevel
+;    --source-map
+;    --pretty
+;    +toplevel.js
+;    +dynlink.js
+;    %{dep:extension.bc}
+;    -o
+;    %{targets})))

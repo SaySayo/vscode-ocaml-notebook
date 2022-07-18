@@ -116,8 +116,16 @@ module NotebookDocumentContentOptions : sig
   type t
 end
 
+module Range : sig
+  type t
+end
+
 module TextDocument : sig
   type t
+  
+  val fileName : t -> string 
+
+  val getText : t -> ?range:Range.t -> unit -> string
   (*
      val uri : t -> Uri.t
 

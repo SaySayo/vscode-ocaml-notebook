@@ -153,8 +153,17 @@ module NotebookDocumentContentOptions = struct
   type t = Ojs.t [@@js]
 end
 
+module Range = struct
+  type t = Ojs.t [@@js]
+end
+
 module TextDocument = struct
   type t = Ojs.t [@@js]
+
+include
+  [%js: 
+    val fileName : t -> string [@@js.get]
+    val getText : t -> ?range:Range.t -> unit -> string [@@js.call]]
 end
 
 module NotebookCellOutputItem = struct

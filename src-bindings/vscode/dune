@@ -7,8 +7,3 @@
   (pps gen_js_api.ppx))
  (modes byte))
 
-; (rule
-;  (targets vscode.ml)
-;  (deps vscode.mli)
-;  (action
-;   (run %{bin:gen_js_api} %{deps})))

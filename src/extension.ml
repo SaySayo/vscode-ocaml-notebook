@@ -2,9 +2,9 @@ open Js_of_ocaml
 open Vscode
 
 let deserializeNotebook ~content:_ ~token:_ =
-  let kind = NotebookCellKind.Markup in
-  let value = "This is a proof concept of a notebook cell :)" in
-  let languageId = "ocaml" in
+  let kind = NotebookCellKind.Code in
+  let value = "let x = 5;;" in
+  let languageId = "OCaml" in
   let cell = NotebookCellData.make ~kind ~value ~languageId in
   let cells = [ cell ] in
   NotebookData.make ~cells
@@ -35,7 +35,20 @@ let _notebook_controller =
              (* Create CellOutputItem with the content of the cell *)
              let notebook_cell_output_item =
                (* We don't have a buffer in the VSCode API, this is a UInt8Array, which is part of the escript API, should be binded. *)
-               let data = Buffer.from "ocamlnotebook" in
+                let document = NotebookCell.document cell in 
+                let content = TextDocument.getText document () in
+                let lb = Lexing.from_string content in
+                let len = lb.lex_buffer_len in 
+                let _ = Printf.printf "length of lexbuf: %i\n" len in
+                let b = lb.lex_buffer in 
+                let _ = print_endline (Bytes.to_string b) in
+                let toplevel_phrase = Parse.toplevel_phrase lb in
+                let ()  = Toploop.initialize_toplevel_env () in
+             (* FIXME: We should do error handling using the return bool instead *)
+               let _ = try Toploop.execute_phrase true Format.str_formatter toplevel_phrase with err -> let _ = print_endline (Printexc.to_string err) in true in
+              let output = Format.flush_str_formatter () in
+               let data = Buffer.from output in 
+               (* let data = Buffer.from "output" in *)
                let mime = "text/plain" in
                NotebookCellOutputItem.make ~data ~mime
              in
