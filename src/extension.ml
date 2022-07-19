@@ -45,6 +45,7 @@ let _notebook_controller =
                 let toplevel_phrase = Parse.toplevel_phrase lb in
                 let ()  = Toploop.initialize_toplevel_env () in
              (* FIXME: We should do error handling using the return bool instead *)
+                let () = Js_of_ocaml_toplevel.JsooTop.initialize () in
                let _ = try Toploop.execute_phrase true Format.str_formatter toplevel_phrase with err -> let _ = print_endline (Printexc.to_string err) in true in
               let output = Format.flush_str_formatter () in
                let data = Buffer.from output in 
