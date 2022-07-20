@@ -1,5 +1,31 @@
 open Js_of_ocaml
 open Vscode
+open Yojson
+
+(* type t = [ 
+| `Null
+| `Bool of bool
+| `Int of int
+| `Intlit of string
+| `Float of float
+| `Floatlit of string
+| `String of string
+| `Stringlit of string
+| `Assoc of (string * t) list
+| `List of t list
+| `Tuple of t list
+| `Variant of string * t option
+ ]
+
+type _toplevel_struct = {
+  metadata : t;
+  nbformat : int;
+  nbformat_minor : int;
+  cells : int list
+} *)
+
+(* let example = "\"field\": 23"
+let _ = print_endline Yojson.from_string example; *)
 
 let deserializeNotebook ~content:_ ~token:_ =
   let kind = NotebookCellKind.Code in
@@ -49,7 +75,6 @@ let _notebook_controller =
                let _ = try Toploop.execute_phrase true Format.str_formatter toplevel_phrase with err -> let _ = print_endline (Printexc.to_string err) in true in
               let output = Format.flush_str_formatter () in
                let data = Buffer.from output in 
-               (* let data = Buffer.from "output" in *)
                let mime = "text/plain" in
                NotebookCellOutputItem.make ~data ~mime
              in

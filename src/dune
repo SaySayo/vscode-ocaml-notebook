@@ -1,6 +1,6 @@
 (executable
  (name extension)
- (libraries js_of_ocaml vscode compiler-libs.toplevel js_of_ocaml-toplevel)
+ (libraries js_of_ocaml vscode compiler-libs.toplevel js_of_ocaml-toplevel yojson)
  (modes js)
  (preprocess
   (pps js_of_ocaml-ppx))
