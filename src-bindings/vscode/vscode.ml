@@ -113,7 +113,7 @@ module NotebookData = struct
     val make : cells:NotebookCellData.t list -> t
       [@@js.new "vscode.NotebookData"]
 
-    val cells : t -> NotebookCellData.t list [@@js.global "NotebookCellData"]]
+    val cells : t -> NotebookCellData.t list [@@js.get]]
 end
 
 module CancellationToken = struct

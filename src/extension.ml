@@ -1,41 +1,62 @@
 open Js_of_ocaml
 open Vscode
-open Yojson
 
-(* type t = [ 
-| `Null
-| `Bool of bool
-| `Int of int
-| `Intlit of string
-| `Float of float
-| `Floatlit of string
-| `String of string
-| `Stringlit of string
-| `Assoc of (string * t) list
-| `List of t list
-| `Tuple of t list
-| `Variant of string * t option
- ]
+module Jupyter_notebook = struct
+  type cell = { cell_type : string; source : string } [@@deriving yojson]
 
-type _toplevel_struct = {
-  metadata : t;
-  nbformat : int;
-  nbformat_minor : int;
-  cells : int list
-} *)
+  type t = { nbformat : int; nbformat_minor : int; cells : cell list }
+  [@@deriving yojson]
+end
 
-(* let example = "\"field\": 23"
-let _ = print_endline Yojson.from_string example; *)
-
-let deserializeNotebook ~content:_ ~token:_ =
-  let kind = NotebookCellKind.Code in
-  let value = "let x = 5;;" in
-  let languageId = "OCaml" in
-  let cell = NotebookCellData.make ~kind ~value ~languageId in
-  let cells = [ cell ] in
+let deserializeNotebook ~content ~token:_ =
+  (* Write a function that converts a Jupyter_notebook.cell to NotebookDataCell.t *)
+  let jupyter_cell_to_vscode (_jupyter_cell : Jupyter_notebook.cell) =
+    let kind = NotebookCellKind.Code in
+    let value = "let x = 5;;" in
+    let languageId = "OCaml" in
+    NotebookCellData.make ~kind ~value ~languageId
+  in
+  (* Jupyter_notebook.t from the JSON *)
+  let json_string = Buffer.to_string content in
+  let json = Yojson.Safe.from_string json_string in
+  let notebook = Jupyter_notebook.of_yojson json |> Result.get_ok in
+  (* Build the list of NotebookCellData.t from the Jupyter_notebook.cell list that we get from cells by iterating on them and calling the function above. *)
+  let cells = List.map jupyter_cell_to_vscode notebook.Jupyter_notebook.cells in
+  (* Build a  NotebookData.t record structure *)
   NotebookData.make ~cells
 
-let serializeNotebook ~data:_ ~token:_ = Buffer.alloc ~size:16
+let serializeNotebook ~(data : NotebookData.t) ~token:_ =
+  (* Write a function that converts a NotebookDataCell.t to Jupyter_notebook.cell *)
+  let vscode_to_jupyter_cell (cell_data : NotebookCellData.t) =
+    let cell_type =
+      match Vscode.NotebookCellData.kind cell_data with
+      | Vscode.NotebookCellKind.Code -> "Code"
+      | Vscode.NotebookCellKind.Markup -> "Markup"
+    in
+    Jupyter_notebook.
+      { cell_type; source = Vscode.NotebookCellData.value cell_data }
+  in
+
+  (* Build the list of Jupyter_notebook.cell from the NotebookCellData.t list that we get from NotebookData.cells by iterating on them and calling the function above. *)
+  let (cells : NotebookCellData.t list) = NotebookData.cells data in
+  let (cells : Jupyter_notebook.cell list) =
+    List.map vscode_to_jupyter_cell cells
+  in
+
+  (* Build a Jupyter_notebook.t record structure *)
+  let jupyter_notebook_structure =
+    Jupyter_notebook.{ nbformat = 0; nbformat_minor = 0; cells }
+  in
+  (* Convert a Jupyter_notebook.t to a JSON structure. (the PPX deriver generats a Jupyter_notebook.to_yojson function) *)
+  let (json : Yojson.Safe.t) =
+    Jupyter_notebook.to_yojson jupyter_notebook_structure
+  in
+
+  (* Convert the JSON structure to a string *)
+  let json_string = Yojson.Safe.to_string json in
+
+  (* Convert the JSON string to a buffer. Buffer.from_string or something. *)
+  Buffer.from json_string
 
 let notebookSerializer =
   NotebookSerializer.create ~serializeNotebook ~deserializeNotebook
@@ -61,20 +82,27 @@ let _notebook_controller =
              (* Create CellOutputItem with the content of the cell *)
              let notebook_cell_output_item =
                (* We don't have a buffer in the VSCode API, this is a UInt8Array, which is part of the escript API, should be binded. *)
-                let document = NotebookCell.document cell in 
-                let content = TextDocument.getText document () in
-                let lb = Lexing.from_string content in
-                let len = lb.lex_buffer_len in 
-                let _ = Printf.printf "length of lexbuf: %i\n" len in
-                let b = lb.lex_buffer in 
-                let _ = print_endline (Bytes.to_string b) in
-                let toplevel_phrase = Parse.toplevel_phrase lb in
-                let ()  = Toploop.initialize_toplevel_env () in
-             (* FIXME: We should do error handling using the return bool instead *)
-                let () = Js_of_ocaml_toplevel.JsooTop.initialize () in
-               let _ = try Toploop.execute_phrase true Format.str_formatter toplevel_phrase with err -> let _ = print_endline (Printexc.to_string err) in true in
-              let output = Format.flush_str_formatter () in
-               let data = Buffer.from output in 
+               let document = NotebookCell.document cell in
+               let content = TextDocument.getText document () in
+               let lb = Lexing.from_string content in
+               let len = lb.lex_buffer_len in
+               let _ = Printf.printf "length of lexbuf: %i\n" len in
+               let b = lb.lex_buffer in
+               let _ = print_endline (Bytes.to_string b) in
+               let toplevel_phrase = Parse.toplevel_phrase lb in
+               let () = Toploop.initialize_toplevel_env () in
+               (* FIXME: We should do error handling using the return bool instead *)
+               let () = Js_of_ocaml_toplevel.JsooTop.initialize () in
+               let _ =
+                 try
+                   Toploop.execute_phrase true Format.str_formatter
+                     toplevel_phrase
+                 with err ->
+                   let _ = print_endline (Printexc.to_string err) in
+                   true
+               in
+               let output = Format.flush_str_formatter () in
+               let data = Buffer.from output in
                let mime = "text/plain" in
                NotebookCellOutputItem.make ~data ~mime
              in
