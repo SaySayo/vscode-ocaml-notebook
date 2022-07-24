@@ -9,13 +9,19 @@ module Jupyter_notebook = struct
 end
 
 let deserializeNotebook ~content ~token:_ =
-  (* Write a function that converts a Jupyter_notebook.cell to NotebookDataCell.t *)
-  let jupyter_cell_to_vscode (_jupyter_cell : Jupyter_notebook.cell) =
-    let kind = NotebookCellKind.Code in
-    let value = "let x = 5;;" in
+  (* Write a function that converts a Jupyter_notebook.cell to NotebookCellData.t *)
+  let jupyter_cell_to_vscode (jupyter_cell : Jupyter_notebook.cell) =
+      let _cell_type (x : NotebookCellData.t) = 
+        match x with
+        | {cell_type = "Code"; source = Vscode.NotebookCellData.[value] jupyter_cell} -> Vscode.NotebookCellKind.Code
+        | {cell_type = "Markup"; source = Vscode.NotebookCellData.value jupyter_cell} -> Vscode.NotebookCellKind.Markup 
+        | {cell_type; source} -> Vscode.NotebookCellData.kind in 
+      Jupyter_notebook.cell in
+    (* let kind = NotebookCellKind.Code in
+    let value = Vscode.NotebookCellData.value  in
     let languageId = "OCaml" in
-    NotebookCellData.make ~kind ~value ~languageId
-  in
+    NotebookCellData.make ~kind ~value ~languageId *)
+  
   (* Jupyter_notebook.t from the JSON *)
   let json_string = Buffer.to_string content in
   let json = Yojson.Safe.from_string json_string in
@@ -141,16 +147,3 @@ let () =
   let open Js_of_ocaml.Js in
   export "activate" (wrap_callback activate)
 
-(* let notebookController =
-   let createNotebookCellExecution ~cell:cell = *)
-
-(* let _notebookCell =
-   (* let kind = NotebookCellKind.Markup in
-   let document = TextDocument in
-   let outputs = NotebookCellOutput.make ~items ()  *)
-   let kind = NotebookCellKind.Markup in
-     let value = "This is a proof concept of a notebook cell :)" in
-     let languageId = "OCaml" in
-     let cell = NotebookCellData.make ~kind ~value ~languageId in
-     let cells = [cell] in
-     NotebookData.make ~cells *)
