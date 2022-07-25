@@ -83,7 +83,8 @@ module Buffer : sig
   type t
 
   val alloc : size:int -> t
-  val from : string -> t 
+  val from : string -> t
+  val to_string : t -> string
 end
 
 module NotebookSerializer : sig
@@ -122,9 +123,8 @@ end
 
 module TextDocument : sig
   type t
-  
-  val fileName : t -> string 
 
+  val fileName : t -> string
   val getText : t -> ?range:Range.t -> unit -> string
   (*
      val uri : t -> Uri.t
@@ -189,6 +189,7 @@ module NotebookCell : sig
   type t
 
   val kind : t -> NotebookCellKind.t
+
   (* val metadata : t *)
   val notebook : t -> NotebookDocument.t
   val document : t -> TextDocument.t

@@ -123,8 +123,11 @@ end
 module Buffer = struct
   type t = Ojs.t [@@js]
 
-  include [%js: val alloc : size:int -> t [@@js.new "Buffer.alloc"]
-  val from : string -> t [@@js.global "Buffer.from"]]
+  include
+    [%js:
+    val alloc : size:int -> t [@@js.new "Buffer.alloc"]
+    val from : string -> t [@@js.global "Buffer.from"]
+    val to_string : t -> string [@@js.get]]
 end
 
 module NotebookSerializer = struct
@@ -160,8 +163,8 @@ end
 module TextDocument = struct
   type t = Ojs.t [@@js]
 
-include
-  [%js: 
+  include
+    [%js:
     val fileName : t -> string [@@js.get]
     val getText : t -> ?range:Range.t -> unit -> string [@@js.call]]
 end
@@ -206,6 +209,7 @@ module NotebookCell = struct
   val index : t -> int [@@js.get] *)
 
     val kind : t -> NotebookCellKind.t [@@js.get]
+
     (* val metadata : t [@@js.get "vscode.NotebookCell.metadata"] *)
     val notebook : t -> NotebookDocument.t [@@js.get]
     val outputs : t -> NotebookCellOutput.t list [@@js.get]]

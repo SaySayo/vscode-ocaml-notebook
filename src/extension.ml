@@ -9,19 +9,18 @@ module Jupyter_notebook = struct
 end
 
 let deserializeNotebook ~content ~token:_ =
-  (* Write a function that converts a Jupyter_notebook.cell to NotebookCellData.t *)
-  let jupyter_cell_to_vscode (jupyter_cell : Jupyter_notebook.cell) =
-      let _cell_type (x : NotebookCellData.t) = 
-        match x with
-        | {cell_type = "Code"; source = Vscode.NotebookCellData.[value] jupyter_cell} -> Vscode.NotebookCellKind.Code
-        | {cell_type = "Markup"; source = Vscode.NotebookCellData.value jupyter_cell} -> Vscode.NotebookCellKind.Markup 
-        | {cell_type; source} -> Vscode.NotebookCellData.kind in 
-      Jupyter_notebook.cell in
-    (* let kind = NotebookCellKind.Code in
-    let value = Vscode.NotebookCellData.value  in
-    let languageId = "OCaml" in
-    NotebookCellData.make ~kind ~value ~languageId *)
-  
+  (* a function that converts a Jupyter_notebook.cell to NotebookCellData.t *)
+  let jupyter_cell_to_vscode (jupyter_cell : Jupyter_notebook.cell) = 
+     let open Jupyter_notebook in
+     let languageId = "OCaml" in
+      let kind =
+        (match jupyter_cell with
+        | {cell_type = "Code"; _} -> Vscode.NotebookCellKind.Code
+        | {cell_type = "Markup"; _} -> Vscode.NotebookCellKind.Markup 
+        | _ -> assert false) 
+      in 
+      let value = "let x = 5;;" in
+      Vscode.NotebookCellData.make ~kind ~languageId ~value in
   (* Jupyter_notebook.t from the JSON *)
   let json_string = Buffer.to_string content in
   let json = Yojson.Safe.from_string json_string in

@@ -1,12 +1,17 @@
 (executable
  (name extension)
- (libraries js_of_ocaml vscode compiler-libs.toplevel js_of_ocaml-toplevel ppx_deriving_yojson.runtime yojson)
+ (libraries
+  js_of_ocaml
+  vscode
+  compiler-libs.toplevel
+  js_of_ocaml-toplevel
+  ppx_deriving_yojson.runtime
+  yojson)
  (modes js)
  (preprocess
   (pps js_of_ocaml-ppx ppx_deriving_yojson))
-  (js_of_ocaml
-  (flags --source-map --pretty --toplevel  +toplevel.js +dynlink.js))
-  )
+ (js_of_ocaml
+  (flags --source-map --pretty --toplevel +toplevel.js +dynlink.js)))
 
 ; (rule
 ;  (targets extension.bc.js)
