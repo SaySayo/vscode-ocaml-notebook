@@ -127,7 +127,8 @@ module Buffer = struct
     [%js:
     val alloc : size:int -> t [@@js.new "Buffer.alloc"]
     val from : string -> t [@@js.global "Buffer.from"]
-    val to_string : t -> string [@@js.get]]
+    val length : t -> int [@@js.global "Buf.length"]
+    val to_string : t -> string [@@js.call]]
 end
 
 module NotebookSerializer = struct

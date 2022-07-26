@@ -84,7 +84,9 @@ module Buffer : sig
 
   val alloc : size:int -> t
   val from : string -> t
+  val length : t -> int
   val to_string : t -> string
+
 end
 
 module NotebookSerializer : sig
