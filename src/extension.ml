@@ -11,15 +11,17 @@ end
 let deserializeNotebook ~content ~token:_ =
   (* a function that converts a Jupyter_notebook.cell to NotebookCellData.t *)
   let jupyter_cell_to_vscode (jupyter_cell : Jupyter_notebook.cell) = 
+     let languageId = "OCaml" in 
      let open Jupyter_notebook in
-     let languageId = "OCaml" in
       let kind =
         (match jupyter_cell with
         | {cell_type = "Code"; _} -> Vscode.NotebookCellKind.Code
         | {cell_type = "Markup"; _} -> Vscode.NotebookCellKind.Markup 
         | _ -> assert false) 
       in 
-      let value = "let x = 5;;" in
+      let value = 
+          (match jupyter_cell with
+          | { cell_type = kind ; source = Vscode.NotebookCellData.value } -> ) in
       Vscode.NotebookCellData.make ~kind ~languageId ~value in
   (* Jupyter_notebook.t from the JSON *)
   let json_string = Buffer.to_string content in
