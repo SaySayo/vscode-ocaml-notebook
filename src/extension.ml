@@ -10,19 +10,18 @@ end
 
 let deserializeNotebook ~content ~token:_ =
   (* a function that converts a Jupyter_notebook.cell to NotebookCellData.t *)
-  let jupyter_cell_to_vscode (jupyter_cell : Jupyter_notebook.cell) = 
-     let languageId = "OCaml" in 
-     let open Jupyter_notebook in
-      let kind =
-        (match jupyter_cell with
-        | {cell_type = "Code"; _} -> Vscode.NotebookCellKind.Code
-        | {cell_type = "Markup"; _} -> Vscode.NotebookCellKind.Markup 
-        | _ -> assert false) 
-      in 
-      let value = 
-          (match jupyter_cell with
-          | { cell_type = kind ; source = Vscode.NotebookCellData.value } -> ) in
-      Vscode.NotebookCellData.make ~kind ~languageId ~value in
+  let jupyter_cell_to_vscode (jupyter_cell : Jupyter_notebook.cell) =
+    let languageId = "OCaml" in
+    let open Jupyter_notebook in
+    let kind =
+      match jupyter_cell with
+      | { cell_type = "Code"; source } -> Vscode.NotebookCellKind.Code
+      | { cell_type = "Markup"; source } -> Vscode.NotebookCellKind.Markup
+      | _ -> assert false
+    in
+    let value = match jupyter_cell with { source; _ } -> source in
+    Vscode.NotebookCellData.make ~kind ~languageId ~value
+  in
   (* Jupyter_notebook.t from the JSON *)
   let json_string = Buffer.to_string content in
   let json = Yojson.Safe.from_string json_string in
@@ -147,4 +146,3 @@ let activate (context : ExtensionContext.t) =
 let () =
   let open Js_of_ocaml.Js in
   export "activate" (wrap_callback activate)
-
