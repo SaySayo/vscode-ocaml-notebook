@@ -2,7 +2,29 @@ open Js_of_ocaml
 open Vscode
 
 module Jupyter_notebook = struct
-  type cell = { cell_type : string; source : string } [@@deriving yojson]
+  type output = {
+    ename : string;
+    evalue : string;
+    output_type : string;
+    traceback : string list;
+  }
+  [@@deriving yojson]
+
+  type cell_type = Code [@name "code"] | Markdown [@name "markdown"]
+  [@@deriving yojson]
+
+  type cell_metadata_vscode = { language_id : string [@key "languageId"] }
+  [@@deriving yojson]
+
+  type cell_metadata = { vscode : cell_metadata_vscode } [@@deriving yojson]
+
+  type cell = {
+    cell_type : cell_type;
+    metadata : cell_metadata;
+    source : string list;
+    outputs : output list;
+  }
+  [@@deriving yojson]
 
   type t = { nbformat : int; nbformat_minor : int; cells : cell list }
   [@@deriving yojson]
@@ -11,36 +33,52 @@ end
 let deserializeNotebook ~content ~token:_ =
   (* a function that converts a Jupyter_notebook.cell to NotebookCellData.t *)
   let jupyter_cell_to_vscode (jupyter_cell : Jupyter_notebook.cell) =
-    let languageId = "OCaml" in
     let open Jupyter_notebook in
     let kind =
       match jupyter_cell with
-      | { cell_type = "Code"; source } -> Vscode.NotebookCellKind.Code
-      | { cell_type = "Markup"; source } -> Vscode.NotebookCellKind.Markup
-      | _ -> assert false
+      | { cell_type = Code; _ } -> NotebookCellKind.Code
+      | { cell_type = Markdown; _ } -> NotebookCellKind.Markup
     in
-    let value = match jupyter_cell with { source; _ } -> source in
-    Vscode.NotebookCellData.make ~kind ~languageId ~value
+    let languageId =
+      match jupyter_cell.metadata with
+      | { vscode = { language_id } } -> language_id
+    in
+    let value =
+      match jupyter_cell with { source; _ } -> String.concat "\n" source
+    in
+    let outputs = [] in
+    let notebook_cell_data = NotebookCellData.make ~kind ~languageId ~value in
+    NotebookCellData.set_outputs notebook_cell_data outputs;
+    notebook_cell_data
   in
   (* Jupyter_notebook.t from the JSON *)
   let json_string = Buffer.to_string content in
-  let json = Yojson.Safe.from_string json_string in
-  let notebook = Jupyter_notebook.of_yojson json |> Result.get_ok in
-  (* Build the list of NotebookCellData.t from the Jupyter_notebook.cell list that we get from cells by iterating on them and calling the function above. *)
-  let cells = List.map jupyter_cell_to_vscode notebook.Jupyter_notebook.cells in
-  (* Build a  NotebookData.t record structure *)
-  NotebookData.make ~cells
+  match String.trim json_string with
+  | "" -> NotebookData.make ~cells:[]
+  | json_string ->
+      let json = Yojson.Safe.from_string json_string in
+      let notebook = Jupyter_notebook.of_yojson json |> Result.get_ok in
+      (* Build the list of NotebookCellData.t from the Jupyter_notebook.cell list that we get from cells by iterating on them and calling the function above. *)
+      let cells =
+        List.map jupyter_cell_to_vscode notebook.Jupyter_notebook.cells
+      in
+      (* Build a  NotebookData.t record structure *)
+      NotebookData.make ~cells
 
 let serializeNotebook ~(data : NotebookData.t) ~token:_ =
   (* Write a function that converts a NotebookDataCell.t to Jupyter_notebook.cell *)
   let vscode_to_jupyter_cell (cell_data : NotebookCellData.t) =
     let cell_type =
-      match Vscode.NotebookCellData.kind cell_data with
-      | Vscode.NotebookCellKind.Code -> "Code"
-      | Vscode.NotebookCellKind.Markup -> "Markup"
+      match NotebookCellData.kind cell_data with
+      | NotebookCellKind.Code -> Jupyter_notebook.Code
+      | NotebookCellKind.Markup -> Jupyter_notebook.Markdown
     in
-    Jupyter_notebook.
-      { cell_type; source = Vscode.NotebookCellData.value cell_data }
+    let source = String.split_on_char '\n' (NotebookCellData.value cell_data) in
+    let metadata =
+      Jupyter_notebook.
+        { vscode = { language_id = NotebookCellData.languageId cell_data } }
+    in
+    Jupyter_notebook.{ cell_type; source; outputs = []; metadata }
   in
 
   (* Build the list of Jupyter_notebook.cell from the NotebookCellData.t list that we get from NotebookData.cells by iterating on them and calling the function above. *)

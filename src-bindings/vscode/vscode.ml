@@ -92,30 +92,6 @@ module NotebookCellExecutionSummary = struct
     (* val timing : t -> endTime:int -> startTime:int option [@@js.get] *)]
 end
 
-module NotebookCellData = struct
-  type t = Ojs.t [@@js]
-
-  include
-    [%js:
-    val make : kind:NotebookCellKind.t -> value:string -> languageId:string -> t
-      [@@js.new "vscode.NotebookCellData"]
-
-    val kind : t -> NotebookCellKind.t [@@js.get]
-    val languageId : t -> string [@@js.get]
-    val value : t -> string [@@js.get]]
-end
-
-module NotebookData = struct
-  type t = Ojs.t [@@js]
-
-  include
-    [%js:
-    val make : cells:NotebookCellData.t list -> t
-      [@@js.new "vscode.NotebookData"]
-
-    val cells : t -> NotebookCellData.t list [@@js.get]]
-end
-
 module CancellationToken = struct
   type t = Ojs.t [@@js]
 end
@@ -129,28 +105,6 @@ module Buffer = struct
     val from : string -> t [@@js.global "Buffer.from"]
     val length : t -> int [@@js.global "Buf.length"]
     val to_string : t -> string [@@js.call]]
-end
-
-module NotebookSerializer = struct
-  type t = Ojs.t [@@js]
-
-  include
-    [%js:
-    val deserializeNotebook :
-      t -> content:Buffer.t -> token:CancellationToken.t -> NotebookData.t
-      [@@js.call]
-
-    val serializeNotebook :
-      t -> data:NotebookData.t -> token:CancellationToken.t -> Buffer.t
-      [@@js.call]
-
-    val create :
-      deserializeNotebook:
-        (content:Buffer.t -> token:CancellationToken.t -> NotebookData.t) ->
-      serializeNotebook:
-        (data:NotebookData.t -> token:CancellationToken.t -> Buffer.t) ->
-      t
-      [@@js.builder]]
 end
 
 module NotebookDocumentContentOptions = struct
@@ -235,6 +189,56 @@ module NotebookCellExecution = struct
 
     val end_ : t -> success:bool -> ?endTime:float -> unit -> unit
       [@@js.call "end"]]
+end
+
+module NotebookCellData = struct
+  type t = Ojs.t [@@js]
+
+  include
+    [%js:
+    val make : kind:NotebookCellKind.t -> value:string -> languageId:string -> t
+      [@@js.new "vscode.NotebookCellData"]
+
+    val kind : t -> NotebookCellKind.t [@@js.get]
+    val languageId : t -> string [@@js.get]
+    val value : t -> string [@@js.get]
+    val get_outputs : t -> NotebookCellOutput.t list option [@@js.get "outputs"]
+
+    val set_outputs : t -> NotebookCellOutput.t list -> unit
+      [@@js.set "outputs"]]
+end
+
+module NotebookData = struct
+  type t = Ojs.t [@@js]
+
+  include
+    [%js:
+    val make : cells:NotebookCellData.t list -> t
+      [@@js.new "vscode.NotebookData"]
+
+    val cells : t -> NotebookCellData.t list [@@js.get]]
+end
+
+module NotebookSerializer = struct
+  type t = Ojs.t [@@js]
+
+  include
+    [%js:
+    val deserializeNotebook :
+      t -> content:Buffer.t -> token:CancellationToken.t -> NotebookData.t
+      [@@js.call]
+
+    val serializeNotebook :
+      t -> data:NotebookData.t -> token:CancellationToken.t -> Buffer.t
+      [@@js.call]
+
+    val create :
+      deserializeNotebook:
+        (content:Buffer.t -> token:CancellationToken.t -> NotebookData.t) ->
+      serializeNotebook:
+        (data:NotebookData.t -> token:CancellationToken.t -> Buffer.t) ->
+      t
+      [@@js.builder]]
 end
 
 module NotebookController = struct
