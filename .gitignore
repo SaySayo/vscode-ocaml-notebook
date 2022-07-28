@@ -23,3 +23,6 @@ node_modules/
 # VSCode build artifacts
 .vscode-test/
 *.vsix
+
+# Generated extension build
+dist/extension.js

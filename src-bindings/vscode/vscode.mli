@@ -55,26 +55,6 @@ module NotebookCellExecutionSummary : sig
   (* val timing : t -> endTime:int -> startTime:int option *)
 end
 
-module NotebookCellData : sig
-  type t = Ojs.t
-
-  val make : kind:NotebookCellKind.t -> value:string -> languageId:string -> t
-    [@@js.new "vscode.NotebookCellData"]
-
-  val kind : t -> NotebookCellKind.t
-  val languageId : t -> string
-  val value : t -> string
-end
-
-module NotebookData : sig
-  type t = Ojs.t
-
-  val make : cells:(NotebookCellData.t list[@js.variadic]) -> t
-    [@@js.new "vscode.NotebookData"]
-
-  val cells : t -> NotebookCellData.t list
-end
-
 module CancellationToken : sig
   type t
 end
@@ -86,24 +66,6 @@ module Buffer : sig
   val from : string -> t
   val length : t -> int
   val to_string : t -> string
-
-end
-
-module NotebookSerializer : sig
-  type t
-
-  val deserializeNotebook :
-    t -> content:Buffer.t -> token:CancellationToken.t -> NotebookData.t
-
-  val serializeNotebook :
-    t -> data:NotebookData.t -> token:CancellationToken.t -> Buffer.t
-
-  val create :
-    deserializeNotebook:
-      (content:Buffer.t -> token:CancellationToken.t -> NotebookData.t) ->
-    serializeNotebook:
-      (data:NotebookData.t -> token:CancellationToken.t -> Buffer.t) ->
-    t
 end
 
 module Commands : sig
@@ -217,6 +179,45 @@ module NotebookCellExecution : sig
   val set_executionOrder : t -> int -> unit
   val start : t -> ?startTime:float -> unit -> unit
   val end_ : t -> success:bool -> ?endTime:float -> unit -> unit
+end
+
+module NotebookCellData : sig
+  type t = Ojs.t
+
+  val make : kind:NotebookCellKind.t -> value:string -> languageId:string -> t
+    [@@js.new "vscode.NotebookCellData"]
+
+  val kind : t -> NotebookCellKind.t
+  val languageId : t -> string
+  val value : t -> string
+  val get_outputs : t -> NotebookCellOutput.t list option
+  val set_outputs : t -> NotebookCellOutput.t list -> unit
+end
+
+module NotebookData : sig
+  type t = Ojs.t
+
+  val make : cells:(NotebookCellData.t list[@js.variadic]) -> t
+    [@@js.new "vscode.NotebookData"]
+
+  val cells : t -> NotebookCellData.t list
+end
+
+module NotebookSerializer : sig
+  type t
+
+  val deserializeNotebook :
+    t -> content:Buffer.t -> token:CancellationToken.t -> NotebookData.t
+
+  val serializeNotebook :
+    t -> data:NotebookData.t -> token:CancellationToken.t -> Buffer.t
+
+  val create :
+    deserializeNotebook:
+      (content:Buffer.t -> token:CancellationToken.t -> NotebookData.t) ->
+    serializeNotebook:
+      (data:NotebookData.t -> token:CancellationToken.t -> Buffer.t) ->
+    t
 end
 
 module NotebookController : sig
