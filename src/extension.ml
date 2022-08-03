@@ -137,12 +137,17 @@ let _notebook_controller =
                let _ = print_endline (Bytes.to_string b) in
                let _ =
                  try
-                  let toplevel_phrases = !Toploop.parse_use_file lb in
-                  List.iter ( fun phrase -> let _ = Toploop.execute_phrase true Format.str_formatter phrase in ()) 
+                   let toplevel_phrases = !Toploop.parse_use_file lb in
+                   List.iter
+                     (fun phrase ->
+                       let _ =
+                         Toploop.execute_phrase true Format.str_formatter phrase
+                       in
+                       ())
                      toplevel_phrases
                  with err ->
-                  let _ = print_endline "Execute phrase" in
-                   let _ = (Location.report_exception Format.str_formatter err) in
+                   let _ = print_endline "Execute phrase" in
+                   let _ = Location.report_exception Format.str_formatter err in
                    ()
                in
                let output = Format.flush_str_formatter () in

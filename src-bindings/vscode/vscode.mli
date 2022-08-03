@@ -234,6 +234,8 @@ module NotebookController : sig
     notebook:NotebookDocument.t ->
     controller:t ->
     unit Promise.t
+
+  val supportedLanguages : t -> string
 end
 
 module Notebooks : sig
