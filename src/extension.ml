@@ -109,6 +109,8 @@ let _notebook_controller =
   let id = "ocamlnotebook" in
   let notebookType = "ocamlnotebook" in
   let label = "ocamlnotebook" in
+  let () = Js_of_ocaml_toplevel.JsooTop.initialize () in
+  let () = Toploop.initialize_toplevel_env () in
   let handler ~(cells : NotebookCell.t list) ~notebook:_ ~controller =
     (* Create the handler *)
     let () =
@@ -133,8 +135,6 @@ let _notebook_controller =
                let _ = Printf.printf "length of lexbuf: %i\n" len in
                let b = lb.lex_buffer in
                let _ = print_endline (Bytes.to_string b) in
-               let () = Js_of_ocaml_toplevel.JsooTop.initialize () in
-               let () = Toploop.initialize_toplevel_env () in
                let _ =
                  try
                   let toplevel_phrases = !Toploop.parse_use_file lb in
