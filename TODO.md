@@ -1,7 +1,7 @@
 # To Do
 
-- [ ] Controller: only support supported languages
-- [ ] Serializer: save code cell output
+- [X] Controller: only support supported languages
+- [X] Serializer: save code cell output
 - [ ] Controller: display stdout (and stderr) on the cell output
 - [ ] Controller: Assign execution order to the cell
 

@@ -260,7 +260,8 @@ module NotebookController = struct
       unit Promise.t
       [@@js.call]
 
-    val supportedLanguages : t -> string list [@@js.get]]
+    val supportedLanguages : t -> string list option [@@js.get]
+    val set_supportedLanguages : t -> string list -> unit [@@js.set "supportedLanguages"]]
 end
 
 module Notebooks = struct

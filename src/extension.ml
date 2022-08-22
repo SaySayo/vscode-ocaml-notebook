@@ -1,6 +1,10 @@
 open Js_of_ocaml
 open Vscode
 
+(*List of all the languages the controller supports*)
+let supported_languages = ["ocaml"; "markdown"; "html"; "javascript"; "latex"; "perl"; "powershell"; 
+"raw"; "ruby"; "shellscript"; "sql"; "xml"]
+
 module Jupyter_notebook = struct
   type output = {
     ename : string;
@@ -105,7 +109,7 @@ let serializeNotebook ~(data : NotebookData.t) ~token:_ =
 let notebookSerializer =
   NotebookSerializer.create ~serializeNotebook ~deserializeNotebook
 
-let _notebook_controller =
+let notebook_controller =
   let id = "ocamlnotebook" in
   let notebookType = "ocamlnotebook" in
   let label = "ocamlnotebook" in
@@ -176,6 +180,16 @@ let _notebook_controller =
     Promise.return ()
   in
   Notebooks.createNotebookController ~id ~notebookType ~label ~handler ()
+
+
+
+let print x = match x with 
+| Some x -> List.iter(fun str -> print_endline str) x
+| None -> print_endline "None"
+let _ =
+  let supported_languages_prop = Vscode.NotebookController.supportedLanguages notebook_controller in 
+  print supported_languages_prop
+let set_supportedLanguages = Vscode.NotebookController.set_supportedLanguages notebook_controller supported_languages
 
 let activate (context : ExtensionContext.t) =
   let disposable =
