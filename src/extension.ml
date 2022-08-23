@@ -155,6 +155,11 @@ let notebook_controller =
                    ()
                in
                let output = Format.flush_str_formatter () in
+               let cb = print_endline in
+               let _ = print_endline "testing" in 
+               let chan  = Stdlib.stdout  in
+               let _cell_output = Js_of_ocaml.Sys_js.set_channel_flusher chan cb in
+               let _ = print_endline "tested it" in 
                let data = Buffer.from output in
                let mime = "text/plain" in
                NotebookCellOutputItem.make ~data ~mime
