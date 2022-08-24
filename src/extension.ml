@@ -127,7 +127,7 @@ let notebook_controller =
              in
              let () = NotebookCellExecution.set_executionOrder execution 0 in
              let now = (new%js Js.date_now)##getTime in
-             (* Call execution starts *)
+             (* Cell execution starts *)
              let () = NotebookCellExecution.start execution ~startTime:now () in
              (* Create CellOutputItem with the content of the cell *)
              let notebook_cell_output_item =
@@ -135,10 +135,6 @@ let notebook_controller =
                let document = NotebookCell.document cell in
                let content = TextDocument.getText document () in
                let lb = Lexing.from_string content in
-               let len = lb.lex_buffer_len in
-               let _ = Printf.printf "length of lexbuf: %i\n" len in
-               let b = lb.lex_buffer in
-               let _ = print_endline (Bytes.to_string b) in
                let _ =
                  try
                    let toplevel_phrases = !Toploop.parse_use_file lb in
@@ -150,16 +146,10 @@ let notebook_controller =
                        ())
                      toplevel_phrases
                  with err ->
-                   let _ = print_endline "Execute phrase" in
                    let _ = Location.report_exception Format.str_formatter err in
                    ()
                in
                let output = Format.flush_str_formatter () in
-               let cb = print_endline in
-               let _ = print_endline "testing" in 
-               let chan  = Stdlib.stdout  in
-               let _cell_output = Js_of_ocaml.Sys_js.set_channel_flusher chan cb in
-               let _ = print_endline "tested it" in 
                let data = Buffer.from output in
                let mime = "text/plain" in
                NotebookCellOutputItem.make ~data ~mime
@@ -179,6 +169,11 @@ let notebook_controller =
                NotebookCellExecution.end_ execution ~success:true ~endTime:now
                  ()
              in
+             let cb = print_endline in
+             let chan  = stdout  in
+             let _ = print_endline "testing" in 
+             let _ = Js_of_ocaml.Sys_js.set_channel_flusher chan cb in
+             let _ = print_endline "tested it" in 
              Promise.return ())
       |> Promise.all_list |> ignore
     in
@@ -188,12 +183,8 @@ let notebook_controller =
 
 
 
-let print x = match x with 
-| Some x -> List.iter(fun str -> print_endline str) x
-| None -> print_endline "None"
-let _ =
-  let supported_languages_prop = Vscode.NotebookController.supportedLanguages notebook_controller in 
-  print supported_languages_prop
+let supported_languages_prop = Vscode.NotebookController.supportedLanguages notebook_controller  
+  
 let set_supportedLanguages = Vscode.NotebookController.set_supportedLanguages notebook_controller supported_languages
 
 let activate (context : ExtensionContext.t) =
