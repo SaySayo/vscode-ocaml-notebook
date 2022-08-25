@@ -236,7 +236,6 @@ module NotebookController : sig
     unit Promise.t
 
   val supportedLanguages : t -> string list option
-
   val set_supportedLanguages : t -> string list -> unit
 end
 

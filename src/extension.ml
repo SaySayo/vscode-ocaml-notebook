@@ -1,9 +1,23 @@
 open Js_of_ocaml
 open Vscode
+open Format
 
 (*List of all the languages the controller supports*)
-let supported_languages = ["ocaml"; "markdown"; "html"; "javascript"; "latex"; "perl"; "powershell"; 
-"raw"; "ruby"; "shellscript"; "sql"; "xml"]
+let supported_languages =
+  [
+    "ocaml";
+    "markdown";
+    "html";
+    "javascript";
+    "latex";
+    "perl";
+    "powershell";
+    "raw";
+    "ruby";
+    "shellscript";
+    "sql";
+    "xml";
+  ]
 
 module Jupyter_notebook = struct
   type output = {
@@ -149,6 +163,12 @@ let notebook_controller =
                    let _ = Location.report_exception Format.str_formatter err in
                    ()
                in
+               let chan = stdout in
+               let add_to_cell_output (s : string) =
+                 fprintf str_formatter "%s" s
+               in
+               let cb = add_to_cell_output in
+               let _ = Js_of_ocaml.Sys_js.set_channel_flusher chan cb in
                let output = Format.flush_str_formatter () in
                let data = Buffer.from output in
                let mime = "text/plain" in
@@ -169,11 +189,6 @@ let notebook_controller =
                NotebookCellExecution.end_ execution ~success:true ~endTime:now
                  ()
              in
-             let cb = print_endline in
-             let chan  = stdout  in
-             let _ = print_endline "testing" in 
-             let _ = Js_of_ocaml.Sys_js.set_channel_flusher chan cb in
-             let _ = print_endline "tested it" in 
              Promise.return ())
       |> Promise.all_list |> ignore
     in
@@ -181,11 +196,12 @@ let notebook_controller =
   in
   Notebooks.createNotebookController ~id ~notebookType ~label ~handler ()
 
+let supported_languages_prop =
+  Vscode.NotebookController.supportedLanguages notebook_controller
 
-
-let supported_languages_prop = Vscode.NotebookController.supportedLanguages notebook_controller  
-  
-let set_supportedLanguages = Vscode.NotebookController.set_supportedLanguages notebook_controller supported_languages
+let set_supportedLanguages =
+  Vscode.NotebookController.set_supportedLanguages notebook_controller
+    supported_languages
 
 let activate (context : ExtensionContext.t) =
   let disposable =

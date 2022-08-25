@@ -6,7 +6,8 @@
   compiler-libs.toplevel
   js_of_ocaml-toplevel
   ppx_deriving_yojson.runtime
-  yojson)
+  yojson
+  format)
  (modes js)
  (preprocess
   (pps js_of_ocaml-ppx ppx_deriving_yojson))
