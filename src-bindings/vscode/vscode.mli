@@ -238,7 +238,8 @@ module NotebookController : sig
 
   val supportedLanguages : t -> string list option
   val set_supportedLanguages : t -> string list -> unit
-  val supportsExecutionOrder : t -> bool
+  val supportsExecutionOrder : t -> bool option
+  val set_supportsExecutionOrder : t -> bool option -> unit
 end
 
 module Notebooks : sig

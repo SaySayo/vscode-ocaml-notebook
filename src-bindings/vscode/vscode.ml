@@ -265,7 +265,8 @@ module NotebookController = struct
 
     val set_supportedLanguages : t -> string list -> unit
       [@@js.set "supportedLanguages"]
-    val supportsExecutionOrder : t -> bool [@@js.get]]
+    val supportsExecutionOrder : t -> bool option [@@js.get]
+    val set_supportsExecutionOrder : t -> bool option-> unit [@@js.set "supportsExecutionOrder"]]
 end
 
 module Notebooks = struct
