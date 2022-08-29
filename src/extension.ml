@@ -129,6 +129,7 @@ let notebook_controller =
   let label = "ocamlnotebook" in
   let () = Js_of_ocaml_toplevel.JsooTop.initialize () in
   let () = Toploop.initialize_toplevel_env () in
+  let counter = ref 0 in
   let handler ~(cells : NotebookCell.t list) ~notebook:_ ~controller =
     (* Create the handler *)
     let () =
@@ -139,7 +140,8 @@ let notebook_controller =
              let execution =
                NotebookController.createNotebookCellExecution controller ~cell
              in
-             let () = NotebookCellExecution.set_executionOrder execution 0 in
+             counter := !counter + 1;
+             let () = NotebookCellExecution.set_executionOrder execution !counter in
              let now = (new%js Js.date_now)##getTime in
              (* Cell execution starts *)
              let () = NotebookCellExecution.start execution ~startTime:now () in
@@ -196,12 +198,16 @@ let notebook_controller =
   in
   Notebooks.createNotebookController ~id ~notebookType ~label ~handler ()
 
+let () = Vscode.NotebookController.set_supportsExecutionOrder notebook_controller (Some true) 
 let supported_languages_prop =
   Vscode.NotebookController.supportedLanguages notebook_controller
 
-let set_supportedLanguages =
+let () =
   Vscode.NotebookController.set_supportedLanguages notebook_controller
     supported_languages
+
+(* let cell_execution_order = Vscode.NotebookCellExecutionSummary.executionOrder note *)
+
 
 let activate (context : ExtensionContext.t) =
   let disposable =

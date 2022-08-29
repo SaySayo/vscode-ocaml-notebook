@@ -158,10 +158,10 @@ module NotebookCell = struct
   include
     [%js:
     val document : t -> TextDocument.t [@@js.get]
-    (*
-  val executionSummary : t -> unit -> NotebookCellExecutionSummary.t [@@js.get]
-
-  val index : t -> int [@@js.get] *)
+    
+  val executionSummary : t -> NotebookCellExecutionSummary.t [@@js.get]
+   
+   (* val index : t -> int [@@js.get] *)
 
     val kind : t -> NotebookCellKind.t [@@js.get]
 
@@ -205,7 +205,8 @@ module NotebookCellData = struct
     val get_outputs : t -> NotebookCellOutput.t list option [@@js.get "outputs"]
 
     val set_outputs : t -> NotebookCellOutput.t list -> unit
-      [@@js.set "outputs"]]
+      [@@js.set "outputs"]
+  val executionSummary : t -> NotebookCellExecutionSummary.t [@@js.get]]
 end
 
 module NotebookData = struct
@@ -263,7 +264,9 @@ module NotebookController = struct
     val supportedLanguages : t -> string list option [@@js.get]
 
     val set_supportedLanguages : t -> string list -> unit
-      [@@js.set "supportedLanguages"]]
+      [@@js.set "supportedLanguages"]
+    val supportsExecutionOrder : t -> bool option [@@js.get]
+    val set_supportsExecutionOrder : t -> bool option-> unit [@@js.set "supportsExecutionOrder"]]
 end
 
 module Notebooks = struct
