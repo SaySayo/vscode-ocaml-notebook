@@ -157,10 +157,10 @@ module NotebookCell : sig
   (* val metadata : t *)
   val notebook : t -> NotebookDocument.t
   val document : t -> TextDocument.t
-  (*
-  val executionSummary : t -> unit -> NotebookCellExecutionSummary.t
+  
+  val executionSummary : t -> NotebookCellExecutionSummary.t
 
-  val index : t -> int *)
+ (* val index : t -> int *)
 
   val outputs : t -> NotebookCellOutput.t list
 end
@@ -192,6 +192,7 @@ module NotebookCellData : sig
   val value : t -> string
   val get_outputs : t -> NotebookCellOutput.t list option
   val set_outputs : t -> NotebookCellOutput.t list -> unit
+  val executionSummary : t -> NotebookCellExecutionSummary.t
 end
 
 module NotebookData : sig
@@ -237,6 +238,7 @@ module NotebookController : sig
 
   val supportedLanguages : t -> string list option
   val set_supportedLanguages : t -> string list -> unit
+  val supportsExecutionOrder : t -> bool
 end
 
 module Notebooks : sig

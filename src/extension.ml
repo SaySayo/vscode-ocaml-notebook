@@ -189,19 +189,24 @@ let notebook_controller =
                NotebookCellExecution.end_ execution ~success:true ~endTime:now
                  ()
              in
+             let _ = Vscode.NotebookCellExecution.executionOrder execution in
              Promise.return ())
       |> Promise.all_list |> ignore
     in
-    Promise.return ()
+    Promise.return () 
   in
   Notebooks.createNotebookController ~id ~notebookType ~label ~handler ()
 
+let supports_execution_order = Vscode.NotebookController.supportsExecutionOrder notebook_controller 
 let supported_languages_prop =
   Vscode.NotebookController.supportedLanguages notebook_controller
 
 let set_supportedLanguages =
   Vscode.NotebookController.set_supportedLanguages notebook_controller
     supported_languages
+
+(* let cell_execution_order = Vscode.NotebookCellExecutionSummary.executionOrder note *)
+
 
 let activate (context : ExtensionContext.t) =
   let disposable =
