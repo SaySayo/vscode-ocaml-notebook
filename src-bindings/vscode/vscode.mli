@@ -68,21 +68,25 @@ module Buffer : sig
   val to_string : t -> string
 end
 
-module TextEditor : sig 
-  type t 
-  end
-  
-  module TextEditorEdit : sig 
-    type t 
-    end
+module TextEditor : sig
+  type t
+end
+
+module TextEditorEdit : sig
+  type t
+end
 
 module Commands : sig
   val registerCommand :
     command:string -> callback:(args:Ojs.t list -> unit) -> Disposable.t
 
-    val registerTextEditorCommand :
+  val registerTextEditorCommand :
     command:string ->
-    callback:(textEditor:TextEditor.t -> edit:TextEditorEdit.t -> args:(Ojs.t list) -> unit) ->
+    callback:
+      (textEditor:TextEditor.t ->
+      edit:TextEditorEdit.t ->
+      args:Ojs.t list ->
+      unit) ->
     Disposable.t
 end
 
@@ -170,10 +174,9 @@ module NotebookCell : sig
   (* val metadata : t *)
   val notebook : t -> NotebookDocument.t
   val document : t -> TextDocument.t
-  
   val executionSummary : t -> NotebookCellExecutionSummary.t
 
- (* val index : t -> int *)
+  (* val index : t -> int *)
 
   val outputs : t -> NotebookCellOutput.t list
 end

@@ -48,6 +48,25 @@ module Jupyter_notebook = struct
   [@@deriving yojson]
 end
 
+(* type text_editor_command =
+  { id : string
+  ; handler :
+         ExtensionContext.t
+      -> textEditor:TextEditor.t
+      -> edit:TextEditorEdit.t
+      -> args:Ojs.t list
+      -> unit
+  }
+
+  type t =
+  | Text_editor_command of text_editor_command
+
+  let commands = ref []
+
+  let text_editor_command id handler =
+    let command = Text_editor_command { id; handler } in
+    commands := command :: !commands;
+    command *)
 let deserializeNotebook ~content ~token:_ =
   (* a function that converts a Jupyter_notebook.cell to NotebookCellData.t *)
   let jupyter_cell_to_vscode (jupyter_cell : Jupyter_notebook.cell) =
@@ -141,7 +160,9 @@ let notebook_controller =
                NotebookController.createNotebookCellExecution controller ~cell
              in
              counter := !counter + 1;
-             let () = NotebookCellExecution.set_executionOrder execution !counter in
+             let () =
+               NotebookCellExecution.set_executionOrder execution !counter
+             in
              let now = (new%js Js.date_now)##getTime in
              (* Cell execution starts *)
              let () = NotebookCellExecution.start execution ~startTime:now () in
@@ -198,7 +219,10 @@ let notebook_controller =
   in
   Notebooks.createNotebookController ~id ~notebookType ~label ~handler ()
 
-let () = Vscode.NotebookController.set_supportsExecutionOrder notebook_controller (Some true) 
+let () =
+  Vscode.NotebookController.set_supportsExecutionOrder notebook_controller
+    (Some true)
+
 let supported_languages_prop =
   Vscode.NotebookController.supportedLanguages notebook_controller
 
@@ -206,12 +230,16 @@ let () =
   Vscode.NotebookController.set_supportedLanguages notebook_controller
     supported_languages
 
-let onclick (context : ExtensionContext.t) = 
-  let command = "restart" in
-  let callback ~(textEditor : TextEditor.t) ~(edit : TextEditorEdit.t) ~args:_ = print_endline "This is a restart button" in 
-  let disposable = Vscode.Commands.registerTextEditorCommand ~command ~callback
-in 
-ExtensionContext.subscribe ~disposable context
+  let _ = print_endline "this is a test"
+let onclick (context : ExtensionContext.t) =
+  let handler ~(textEditor : TextEditor.t) ~(edit : TextEditorEdit.t) ~args:_ =
+    print_endline "This is a restart button"
+  in
+  let id = "registerTextEditorCommand" in
+  let disposable =
+    Vscode.Commands.registerTextEditorCommand ~command:id ~callback:handler
+  in
+  ExtensionContext.subscribe ~disposable context
 
 let activate (context : ExtensionContext.t) =
   let disposable =
@@ -225,3 +253,6 @@ let activate (context : ExtensionContext.t) =
 let () =
   let open Js_of_ocaml.Js in
   export "activate" (wrap_callback activate)
+let () = 
+let open Js_of_ocaml.Js in
+export "onclick" (wrap_callback onclick)
