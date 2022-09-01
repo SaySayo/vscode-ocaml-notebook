@@ -3,7 +3,7 @@
   "displayName": "Ocaml Notebook",
   "description": "Ocaml notebooks example for VS Code",
   "version": "0.0.1",
-  "publisher": "vscode-samples",
+  "publisher": "saysayo",
   "preview": true,
   "engines": {
     "vscode": "^1.64.0"
@@ -26,6 +26,20 @@
           }
         ]
       }
-    ]
+    ],
+    "commands": [
+      {
+        "command": "vscode-ocaml-notebooks.restartkernel",
+        "title": "%vscode-ocaml-notebooks.command.vscode-ocaml-notebooks.restartkernel.title%",
+        "shortTitle": "%vscode-ocaml-notebooks.command.vscode-ocaml-notebooks.restartkernel.shorttitle%",
+        "category": "vscode-ocaml-notebooks",
+        "enablement": "isWorkspaceTrusted && vscode-ocaml-notebooks.interactive.canRestartNotebookKernel"
+    }],
+    "editor/title": [
+      {
+          "command": "vscode-ocaml-notebooks.notebookeditor.restartkernel",
+          "title": "%vscode-ocaml-notebooks.command.vscode-ocaml-notebooks.restartkernel.title%",
+          "group": "navigation@1"
+      }]
   }
 }
