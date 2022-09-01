@@ -206,8 +206,12 @@ let () =
   Vscode.NotebookController.set_supportedLanguages notebook_controller
     supported_languages
 
-(* let cell_execution_order = Vscode.NotebookCellExecutionSummary.executionOrder note *)
-
+let onclick (context : ExtensionContext.t) = 
+  let command = "restart" in
+  let callback ~(textEditor : TextEditor.t) ~(edit : TextEditorEdit.t) ~args:_ = print_endline "This is a restart button" in 
+  let disposable = Vscode.Commands.registerTextEditorCommand ~command ~callback
+in 
+ExtensionContext.subscribe ~disposable context
 
 let activate (context : ExtensionContext.t) =
   let disposable =

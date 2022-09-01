@@ -29,17 +29,23 @@
     ],
     "commands": [
       {
-        "command": "vscode-ocaml-notebooks.restartkernel",
+        "command": "vscode-ocaml-notebooks.notebookeditor.restartkernel",
         "title": "%vscode-ocaml-notebooks.command.vscode-ocaml-notebooks.restartkernel.title%",
-        "shortTitle": "%vscode-ocaml-notebooks.command.vscode-ocaml-notebooks.restartkernel.shorttitle%",
+        "shortTitle": "restartkernel",
         "category": "vscode-ocaml-notebooks",
-        "enablement": "isWorkspaceTrusted && vscode-ocaml-notebooks.interactive.canRestartNotebookKernel"
+        "enablement": "true"
     }],
+    "menus": {
     "editor/title": [
       {
           "command": "vscode-ocaml-notebooks.notebookeditor.restartkernel",
           "title": "%vscode-ocaml-notebooks.command.vscode-ocaml-notebooks.restartkernel.title%",
           "group": "navigation@1"
-      }]
+      }],
+      "notebook/toolbar": [
+        {
+            "command": "vscode-ocaml-notebooks.notebookeditor.restartkernel",
+            "group": "navigation/execute@1"
+        }]}
   }
 }

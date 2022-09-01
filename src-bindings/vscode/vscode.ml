@@ -35,6 +35,14 @@ module ExtensionContext = struct
       ()]]
 end
 
+module TextEditor = struct 
+type t = Ojs.t [@@js]
+end
+
+module TextEditorEdit = struct 
+  type t = Ojs.t [@@js]
+  end
+
 module Commands = struct
   include
     [%js:
@@ -42,7 +50,13 @@ module Commands = struct
       command:string ->
       callback:(args:(Ojs.t list[@js.variadic]) -> unit) ->
       Disposable.t
-      [@@js.global "vscode.commands.registerCommand"]]
+      [@@js.global "vscode.commands.registerCommand"]
+
+      val registerTextEditorCommand :
+      command:string ->
+      callback:(textEditor:TextEditor.t -> edit:TextEditorEdit.t -> args:(Ojs.t list[@js.variadic]) -> unit) ->
+      Disposable.t
+      [@@js.global "vscode.commands.registerTextEditorCommand"]]
 end
 
 module Window = struct
