@@ -33,6 +33,10 @@
         "title": "%vscode-ocaml-notebooks.command.vscode-ocaml-notebooks.restartkernel.title%",
         "shortTitle": "restartkernel",
         "category": "vscode-ocaml-notebooks",
+        "icon": {
+          "light": "resources/light/restart-kernel.svg",
+          "dark": "resources/dark/restart-kernel.svg"
+      },
         "enablement": "true"
     }],
     "menus": {
