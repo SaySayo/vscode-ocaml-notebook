@@ -230,7 +230,7 @@ let () =
   Vscode.NotebookController.set_supportedLanguages notebook_controller
     supported_languages
 
-  type t = {
+  (* type t = {
     id : string;
     handler : textEditor:TextEditor.t ->
       edit:TextEditorEdit.t ->
@@ -242,33 +242,43 @@ let () =
       let command = {id; handler} in 
       commands := command :: !commands;
       command 
- 
-let onclick =
+  *)
+let onclick (context : ExtensionContext.t) =
   let handler ~(textEditor : TextEditor.t) ~(edit : TextEditorEdit.t) ~args:_ =
     print_endline "This is a restart button"
   in
   let id = "registerTextEditorCommand" in
-  command id handler
+  let disposable =
+    Vscode.Commands.registerTextEditorCommand ~command:id ~callback:handler
+  in
+  ExtensionContext.subscribe ~disposable context
 
-let register extension (command : t) = function 
+(* let register extension (command : t) = function 
 | {id; handler} -> 
   let id = id in
   let callback = handler in
   let disposable = Vscode.Commands.registerTextEditorCommand ~callback ~id
 in  
-ExtensionContext.subscribe extension ~disposable
+ExtensionContext.subscribe extension ~disposable *)
 
 
 (* let register_commands extension = register extension onclick *)
 
 let activate (context : ExtensionContext.t) =
+  let () =
+    let handler ~(textEditor : TextEditor.t) ~(edit : TextEditorEdit.t) ~args:_ =
+      print_endline "This is a restart button"
+    in
+    let id = "registerTextEditorCommand" in
+    let dispose =
+      Vscode.Commands.registerTextEditorCommand ~command:id ~callback:handler
+    in
+    ExtensionContext.subscribe ~disposable:dispose context in
   let disposable =
     Workspace.registerNotebookSerializer ~notebookType:"ocamlnotebook"
       ~serializer:notebookSerializer ()
   in
-  register_commands extension;
   ExtensionContext.subscribe ~disposable context
-
 (* see {{:https://code.visualstudio.com/api/references/vscode-api#Extension}
    activate() *)
 let () =
