@@ -230,22 +230,43 @@ let () =
   Vscode.NotebookController.set_supportedLanguages notebook_controller
     supported_languages
 
-  let _ = print_endline "this is a test"
-let onclick (context : ExtensionContext.t) =
+  type t = {
+    id : string;
+    handler : textEditor:TextEditor.t ->
+      edit:TextEditorEdit.t ->
+      args:(Ojs.t list) ->
+      unit
+  }
+    let commands = ref []
+    let command id handler = 
+      let command = {id; handler} in 
+      commands := command :: !commands;
+      command 
+ 
+let onclick =
   let handler ~(textEditor : TextEditor.t) ~(edit : TextEditorEdit.t) ~args:_ =
     print_endline "This is a restart button"
   in
   let id = "registerTextEditorCommand" in
-  let disposable =
-    Vscode.Commands.registerTextEditorCommand ~command:id ~callback:handler
-  in
-  ExtensionContext.subscribe ~disposable context
+  command id handler
+
+let register extension (command : t) = function 
+| {id; handler} -> 
+  let id = id in
+  let callback = handler in
+  let disposable = Vscode.Commands.registerTextEditorCommand ~callback ~id
+in  
+ExtensionContext.subscribe extension ~disposable
+
+
+(* let register_commands extension = register extension onclick *)
 
 let activate (context : ExtensionContext.t) =
   let disposable =
     Workspace.registerNotebookSerializer ~notebookType:"ocamlnotebook"
       ~serializer:notebookSerializer ()
   in
+  register_commands extension;
   ExtensionContext.subscribe ~disposable context
 
 (* see {{:https://code.visualstudio.com/api/references/vscode-api#Extension}
@@ -253,6 +274,3 @@ let activate (context : ExtensionContext.t) =
 let () =
   let open Js_of_ocaml.Js in
   export "activate" (wrap_callback activate)
-let () = 
-let open Js_of_ocaml.Js in
-export "onclick" (wrap_callback onclick)
