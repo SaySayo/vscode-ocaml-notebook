@@ -267,12 +267,13 @@ ExtensionContext.subscribe extension ~disposable *)
 let activate (context : ExtensionContext.t) =
   let () =
     let handler ~(textEditor : TextEditor.t) ~(edit : TextEditorEdit.t) ~args:_ =
-      print_endline "This is a restart button"
+      Toploop.initialize_toplevel_env ()
     in
-    let id = "registerTextEditorCommand" in
+    let id = "vscode-ocaml-notebooks.notebookeditor.restartkernel" in
     let dispose =
       Vscode.Commands.registerTextEditorCommand ~command:id ~callback:handler
     in
+    let _ = print_endline "test" in
     ExtensionContext.subscribe ~disposable:dispose context in
   let disposable =
     Workspace.registerNotebookSerializer ~notebookType:"ocamlnotebook"
