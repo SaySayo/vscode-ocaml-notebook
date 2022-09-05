@@ -35,6 +35,14 @@ module ExtensionContext = struct
       ()]]
 end
 
+module TextEditor = struct
+  type t = Ojs.t [@@js]
+end
+
+module TextEditorEdit = struct
+  type t = Ojs.t [@@js]
+end
+
 module Commands = struct
   include
     [%js:
@@ -42,7 +50,17 @@ module Commands = struct
       command:string ->
       callback:(args:(Ojs.t list[@js.variadic]) -> unit) ->
       Disposable.t
-      [@@js.global "vscode.commands.registerCommand"]]
+      [@@js.global "vscode.commands.registerCommand"]
+
+    val registerTextEditorCommand :
+      command:string ->
+      callback:
+        (textEditor:TextEditor.t ->
+        edit:TextEditorEdit.t ->
+        args:(Ojs.t list[@js.variadic]) ->
+        unit) ->
+      Disposable.t
+      [@@js.global "vscode.commands.registerTextEditorCommand"]]
 end
 
 module Window = struct
@@ -158,10 +176,9 @@ module NotebookCell = struct
   include
     [%js:
     val document : t -> TextDocument.t [@@js.get]
-    
-  val executionSummary : t -> NotebookCellExecutionSummary.t [@@js.get]
-   
-   (* val index : t -> int [@@js.get] *)
+    val executionSummary : t -> NotebookCellExecutionSummary.t [@@js.get]
+
+    (* val index : t -> int [@@js.get] *)
 
     val kind : t -> NotebookCellKind.t [@@js.get]
 
@@ -206,7 +223,8 @@ module NotebookCellData = struct
 
     val set_outputs : t -> NotebookCellOutput.t list -> unit
       [@@js.set "outputs"]
-  val executionSummary : t -> NotebookCellExecutionSummary.t [@@js.get]]
+
+    val executionSummary : t -> NotebookCellExecutionSummary.t [@@js.get]]
 end
 
 module NotebookData = struct
@@ -265,8 +283,11 @@ module NotebookController = struct
 
     val set_supportedLanguages : t -> string list -> unit
       [@@js.set "supportedLanguages"]
+
     val supportsExecutionOrder : t -> bool option [@@js.get]
-    val set_supportsExecutionOrder : t -> bool option-> unit [@@js.set "supportsExecutionOrder"]]
+
+    val set_supportsExecutionOrder : t -> bool option -> unit
+      [@@js.set "supportsExecutionOrder"]]
 end
 
 module Notebooks = struct

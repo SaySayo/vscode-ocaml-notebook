@@ -4,7 +4,7 @@
 - [X] Serializer: save code cell output
 - [X] Controller: display stdout (and stderr) on the cell output
 - [X] Controller: Assign execution order to the cell
-- [ ] Controller: Add a restart button
+- [X] Controller: Add a restart button
 
 
 Next steps:
