@@ -48,25 +48,6 @@ module Jupyter_notebook = struct
   [@@deriving yojson]
 end
 
-(* type text_editor_command =
-  { id : string
-  ; handler :
-         ExtensionContext.t
-      -> textEditor:TextEditor.t
-      -> edit:TextEditorEdit.t
-      -> args:Ojs.t list
-      -> unit
-  }
-
-  type t =
-  | Text_editor_command of text_editor_command
-
-  let commands = ref []
-
-  let text_editor_command id handler =
-    let command = Text_editor_command { id; handler } in
-    commands := command :: !commands;
-    command *)
 let deserializeNotebook ~content ~token:_ =
   (* a function that converts a Jupyter_notebook.cell to NotebookCellData.t *)
   let jupyter_cell_to_vscode (jupyter_cell : Jupyter_notebook.cell) =
@@ -83,7 +64,9 @@ let deserializeNotebook ~content ~token:_ =
     let value =
       match jupyter_cell with { source; _ } -> String.concat "\n" source
     in
-    let outputs = [] in
+    let output = {ename = "ename"; evalue = "evalue"; output_type = "code"; traceback = []} in
+    let outputs = [output] in
+    let outputs_to_vscode = List.map (fun output -> NotebookCellData.get_outputs output) outputs in
     let notebook_cell_data = NotebookCellData.make ~kind ~languageId ~value in
     NotebookCellData.set_outputs notebook_cell_data outputs;
     notebook_cell_data
@@ -103,7 +86,7 @@ let deserializeNotebook ~content ~token:_ =
       NotebookData.make ~cells
 
 let serializeNotebook ~(data : NotebookData.t) ~token:_ =
-  (* Write a function that converts a NotebookDataCell.t to Jupyter_notebook.cell *)
+  (* Write a function that converts a NotebookCellData.t to Jupyter_notebook.cell *)
   let vscode_to_jupyter_cell (cell_data : NotebookCellData.t) =
     let cell_type =
       match NotebookCellData.kind cell_data with
@@ -115,7 +98,10 @@ let serializeNotebook ~(data : NotebookData.t) ~token:_ =
       Jupyter_notebook.
         { vscode = { language_id = NotebookCellData.languageId cell_data } }
     in
-    Jupyter_notebook.{ cell_type; source; outputs = []; metadata }
+    let output = NotebookCellData.get_outputs cell_data in
+    let output_to_jupyter (output : NotebookCellOutput.t list option) = Jupyter_notebook.{ ename = "ename"; evalue = "evalue"; output_type = "code"; traceback = []} in 
+    let jupyter_output = output_to_jupyter output in
+    Jupyter_notebook.{ cell_type; source; outputs = [jupyter_output]; metadata }
   in
 
   (* Build the list of Jupyter_notebook.cell from the NotebookCellData.t list that we get from NotebookData.cells by iterating on them and calling the function above. *)
@@ -128,7 +114,7 @@ let serializeNotebook ~(data : NotebookData.t) ~token:_ =
   let jupyter_notebook_structure =
     Jupyter_notebook.{ nbformat = 0; nbformat_minor = 0; cells }
   in
-  (* Convert a Jupyter_notebook.t to a JSON structure. (the PPX deriver generats a Jupyter_notebook.to_yojson function) *)
+  (* Convert a Jupyter_notebook.t to a JSON structure. (the PPX deriver generates a Jupyter_notebook.to_yojson function) *)
   let (json : Yojson.Safe.t) =
     Jupyter_notebook.to_yojson jupyter_notebook_structure
   in
@@ -230,39 +216,6 @@ let () =
   Vscode.NotebookController.set_supportedLanguages notebook_controller
     supported_languages
 
-  (* type t = {
-    id : string;
-    handler : textEditor:TextEditor.t ->
-      edit:TextEditorEdit.t ->
-      args:(Ojs.t list) ->
-      unit
-  }
-    let commands = ref []
-    let command id handler = 
-      let command = {id; handler} in 
-      commands := command :: !commands;
-      command 
-  *)
-let onclick (context : ExtensionContext.t) =
-  let handler ~(textEditor : TextEditor.t) ~(edit : TextEditorEdit.t) ~args:_ =
-    print_endline "This is a restart button"
-  in
-  let id = "registerTextEditorCommand" in
-  let disposable =
-    Vscode.Commands.registerTextEditorCommand ~command:id ~callback:handler
-  in
-  ExtensionContext.subscribe ~disposable context
-
-(* let register extension (command : t) = function 
-| {id; handler} -> 
-  let id = id in
-  let callback = handler in
-  let disposable = Vscode.Commands.registerTextEditorCommand ~callback ~id
-in  
-ExtensionContext.subscribe extension ~disposable *)
-
-
-(* let register_commands extension = register extension onclick *)
 
 let activate (context : ExtensionContext.t) =
   let () =
@@ -273,7 +226,6 @@ let activate (context : ExtensionContext.t) =
     let dispose =
       Vscode.Commands.registerTextEditorCommand ~command:id ~callback:handler
     in
-    let _ = print_endline "test" in
     ExtensionContext.subscribe ~disposable:dispose context in
   let disposable =
     Workspace.registerNotebookSerializer ~notebookType:"ocamlnotebook"

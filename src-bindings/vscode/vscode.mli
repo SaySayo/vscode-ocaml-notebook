@@ -164,6 +164,7 @@ module NotebookCellOutput : sig
   type t
 
   val make : items:NotebookCellOutputItem.t list -> ?metadata:unit -> unit -> t
+  val items : t -> NotebookCellOutputItem.t list
 end
 
 module NotebookCell : sig
