@@ -64,9 +64,11 @@ let deserializeNotebook ~content ~token:_ =
     let value =
       match jupyter_cell with { source; _ } -> String.concat "\n" source
     in
-    let output = {ename = "ename"; evalue = "evalue"; output_type = "code"; traceback = []} in
-    let outputs = [output] in
-    let outputs_to_vscode = List.map (fun nb_output -> NotebookCellData.get_outputs nb_output) outputs in
+
+    let outputs = 
+    match jupyter_cell with 
+      | {outputs = output } -> List.map (fun nb_output -> NotebookCellData.get_outputs nb_output) outputs  in
+    (* let _outputs_to_vscode = List.map (fun nb_output -> NotebookCellData.get_outputs nb_output) outputs in *)
     let notebook_cell_data = NotebookCellData.make ~kind ~languageId ~value in
     NotebookCellData.set_outputs notebook_cell_data outputs;
     notebook_cell_data
