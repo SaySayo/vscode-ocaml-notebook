@@ -69,6 +69,14 @@ let deserializeNotebook ~content ~token:_ =
          match jupyter_cell with
          | {outputs = _ } -> NotebookCellData.get_outputs notebook_cell_data in
        NotebookCellData.set_outputs notebook_cell_data outputs; *)
+    let { outputs = jupyter_outputs; _ } = jupyter_cell in
+    let outputs =
+         List.map
+           (fun (_jupyter_output : Jupyter_notebook.output) ->
+             NotebookCellOutput.make ~items:[] ())
+           jupyter_outputs
+       in
+    NotebookCellData.set_outputs notebook_cell_data outputs;
     notebook_cell_data
   in
   (* Jupyter_notebook.t from the JSON *)
@@ -78,22 +86,10 @@ let deserializeNotebook ~content ~token:_ =
   | json_string ->
       let json = Yojson.Safe.from_string json_string in
       let notebook = Jupyter_notebook.of_yojson json |> Result.get_ok in
-      let rec get_cell_outputs (x : Jupyter_notebook.cell list) =
-        match notebook.cells with
-        | h :: t -> h.outputs @ get_cell_outputs t
-        | [] -> []
-      in
-      let cell_output = get_cell_outputs notebook.cells in
       (* Build the list of NotebookCellData.t from the Jupyter_notebook.cell list that we get from cells by iterating on them and calling the function above. *)
       let cells =
         List.map jupyter_cell_to_vscode notebook.Jupyter_notebook.cells
       in
-      let convert_cell_output_to_vscode_output
-          (y : Jupyter_notebook.output list) cell =
-        match y with [] -> [] | h :: t -> NotebookCell.outputs cell
-      in
-      let vscode_output = convert_cell_output_to_vscode_output cell_output cell in
-      let () = NotebookCellData.set_outputs notebook_cell_data vscode_output in
       (* Build a  NotebookData.t record structure *)
       NotebookData.make ~cells
 
@@ -111,7 +107,7 @@ let serializeNotebook ~(data : NotebookData.t) ~token:_ =
         { vscode = { language_id = NotebookCellData.languageId cell_data } }
     in
     let output = NotebookCellData.get_outputs cell_data in
-    let output_to_jupyter (output : NotebookCellOutput.t list option) =
+    let output_to_jupyter (_output : NotebookCellOutput.t list option) =
       Jupyter_notebook.
         {
           ename = "ename";
