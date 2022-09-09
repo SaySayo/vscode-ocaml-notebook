@@ -168,7 +168,8 @@ module NotebookCellOutput = struct
     val make :
       items:NotebookCellOutputItem.t list -> ?metadata:unit -> unit -> t
       [@@js.new "vscode.NotebookCellOutput"]
-      val items : t -> NotebookCellOutputItem.t list [@@js.get]]
+
+    val items : t -> NotebookCellOutputItem.t list [@@js.get]]
 end
 
 module NotebookCell = struct
